@@ -1,57 +1,52 @@
-\chapter{Wstęp}
-\section{Wprowadzenie}
-Niniejszy \cite{Kedzierski2016} dokument\cite{GettingStartedWithProcessing} powstał \cite{Borenstein1995} z myślą o ujednoliceniu sposobu redagowania prac dyplomowych. Jego źródła mają pełnić rolę szablonu nowoedytowanej pracy, zaś treść powinna być interpretowana jako zestaw zaleceń i uwag o charakterze technicznym (dotyczących takich zagadnień, jak: formatowanie tekstu, załączanie rysunków, układ strony itp.) oraz stylistycznym (odnoszących się do stylu wypowiedzi, sposobów tworzenia referencji itp.).
-
-Szablon przygotowano do kompilacji pdflatexem w konfiguracji: \texttt{MiKTeX} (windowsowa dystrybucja latexa) + \texttt{TeXnicCenter} (środowisko do edycji i kompilacji projektów latexowych) + \texttt{SumatraPDF} (przeglądarka pdfów z nawigacją zwrotną) + JabRef (opcjonalny edytor bazy danych bibliograficznych). Jest to zalecany zestaw narzędzi do edycji pracy w systemie Windows. Można je pobrać ze stron internetowych, których adresy zamieszczono w tabeli~\ref{tab:narzedzia}.
-\begin{table}[htb] \small
-\centering
-\caption{Wykaz zalecanych narzędzi do kompilacji szablonu (adresy internetowe ważne na dzień 1.04.2016)}
-\label{tab:narzedzia}
-\begin{tabularx}{\linewidth}{|c|c|X|p{6cm}|} \hline\
-Narzędzie & Wersja & Opis & Adres \\ \hline\hline
-MiKTeX & 2.9 & Zalecana jest instalacja \texttt{Basic MiKTeX} z dystrubucji 32 lub 64 bitowej. Brakujące pakiety będą się doinstalowywać podczas kompilacji projektu. &
-\url{http://miktex.org/download} \\ \hline
-TexnicCenter & 2.02 &  Można pobrać 32 lub 64 bitową wersję & \url{http://www.texniccenter.org/download/} \\ \hline
-SumatraPDF & 3.1.1 & Można pobrać 32 lub 64 bitową wersję & \url{http://www.sumatrapdfreader.org/download-free-pdf-viewer.html} \\ \hline
-JabRef & 3.3 & Można pobrać 32 lub 64 bitową wersję & \url{http://www.fosshub.com/JabRef.html} \\ \hline
-\end{tabularx}
-\end{table}
-Nic nie stoi jednak na przeszkodzie, aby szablon ten dostosować do wykorzystania z użyciem innych narzędzi. Dostosowanie to mogłoby polegać na zmianie kodowania plików i korekcie deklaracji kodowania znaków w dokumencie głównym (co opisano dalej).
-
-W kodzie źródłowym szablonu zamieszczono komentarze z uwagami pozwalającymi lepiej zrozumieć znaczenie używanych komend. Komentarze te nie są widoczne w pliku \texttt{Dokument.pdf}, który powstaje jako wynik kompilacji szablonu. 
+\chapter{Wprowadzenie}
+\section{Wstęp}
 
 
-%%%2. środowisko do pisania kodu latexa: 
-%%%( )
-%%%3. viewer pdf-ów, pozwalający na nawigację zwrotną: Sumatra PDF 3.0
-%%%(http://www.sumatrapdfreader.org/download-free-pdf-viewer.html)
-%%%
-%%%- o konfiguracji texniccenter do współdziałania z sumatra pdf można poczytać sobie na stronie:
-%%%http://tex.stackexchange.com/questions/116981/how-to-configure-texniccenter-2-0-with-sumatra-2013-2014-2015-version
-%%%(można znaleźć też inne tutoriale)
-%%%
-%%%4. środowisko do zarządzania bibliografią: JabRef
-%%%(http://jabref.sourceforge.net/download.php)
-%%%
-%%%Polecam też instalację pod windowsami następujących narzędzi:
-%%%- Sumatra PDF - przeglądarka pdf umożliwiająca nawigację pomiędzy
-%%%edytowanym tekstem a przeglądanym dokumentem (podglądanie tekstu w
-%%%TeXnicCenter umieszcza kursor w odpowiednim miejscu w pdfie, podwójne
-%%%kliknięcie w pdfie ustawia kursor w edytorze tekstu).
-%%%- JabRef - narzędzie do przygotowywania bibliografii.
-%%%
-%%%
-%%%Uwaga: tytuł powinien zmieścić się w okienku kolorowej okładki (którą
-%%%powinna dostarczyć uczelniana administracja). Proszę posterować
-%%%parametrami, aby "wpasować" w okienko własny tekst.
-%%%
-%%%Do ASAPa należy wprowadzić pracę dyplomową/projekt inżynierski w pliku o nazwie:
-%%%
-%%%W04_[nr albumu]_[rok kalendarzowy]_[rodzaj pracy] (szczegółowa instrukcja pod adresem asap.pwr.edu.pl)
-%%%
-           %%%Przykładowo:
-        %%%­W04_123456_2015_praca inżynierska.pdf     - praca dyplomowa inżynierska
-        %%%W04_123456_2015_projekt inżynierski.pdf   - projekt inżynierski
-        %%%W04_123456_2015_praca magisterska.pdf  - praca dyplomowa magisterska
-%%%
-              %%%rok kalendarzowy ? rok realizacji kursu „Praca dyplomowa” (nie rok obrony) 
+Wraz z rozwojem technologii i wciąż rosnącym popytem na nowinki elektroniczne łatwo jest zaobserwować jak z biegiem czasu pewne rozwiązania adaptowane są do użytku codziennego. Sprzęt niegdyś będący jedynie drogą ciekawostką staje się akcesorium bez którego coraz trudniej jest wyobrazić sobie normalne życie. Tak było z komputerami osobistymi, płatnościami elektronicznymi, dostępem do Internetu, następnie do listy dołączyły smartfony, hulajnogi elektryczne czy douszne słuchawki bluetooth. Coraz popularniejsze stają się także rozwiązania IoT z zakresu AGD - inteligentne pralki, lodówki, odkurzacze. I to właśnie ostatnie z rozwiązań szczególnie przykuł uwagę autora. 
+
+Podczas gdy wiele sprzętu reklamowanego z wykorzystaniem haseł takich jak ``smart`` czy ``intelligent`` z inteligencją nie ma zbyt wiele wspólnego, to ta granica zdaje się coraz mocniej zacierać - szczególnie w przypadku autonomicznych jednostek stworzonych w celu konserwacji powierzchni płaskich. I tutaj nasuwa się pytanie - Dlaczego? Otóż wiele z wymienionych wyżej urządzeń AGD realizuje pojedyncze, wyznaczone, stosunkowo proste zadania a nowoczesnym dodatkiem do tego ma być łączność z siecią, zdalna obsługa z poziomu aplikacji czy duży, kolorowy wyświetlacz pokazujący aktualną pogodę. Oczywiście inteligentne odkurzacze również oferują podobne udogodnienia, jednak nie to wyróżnia je na tle innych akcesoriów. Tym czynnikiem jest złożoność, na pierwszy rzut oka prostego, zadania które realizują. Na drodze do budowy samodzielnie odkurzającego robota stoi wiele przeszkód związanych z ładowaniem, mapowaniem, nawigacją, omijaniem obiektów stojących na wyznaczonej trasie, radzeniem sobie ze zmieniającym się otoczeniem.
+
+W tej pracy przedstawione zostanie autorskie podejście do jednego z tych problemów, przy którym zostaną wykorzystane zarówno własnoręcznie sporządzone jak i gotowe, publicznie dostępne rozwiązania. Tym problemem jest tworzenie mapy pokoju.
+
+\section{Cel i zakres pracy}
+\subsection{Cel}
+Celem jest stworzenie działającego systemu składającego się z autonomicznego robota (platformy mobilnej) połączonego z aplikacją na komputerze stacjonarnym lub laptopie. Robot ten ma za zadanie samodzielnie poruszać się po pomieszczeniu i skanować je w poszukiwaniu przeszkód (ścian, foteli, nóg krzeseł, stołów itp.), a pozyskane dane przesyłać do komputera. W
+aplikacji z danych zebranych z otoczenia robota ma powstać dwuwymiarowa mapa pomieszczenia opisująca je na poziomej płaszczyźnie ok. 10 cm nad poziomem podłogi.
+
+\subsection{Zakres}
+\begin{itemize}
+    \item zaprojektowanie i zbudowanie jeżdżącego robota wyposażonego w sensor odległości i moduł Bluetooth do komunikacji z komputerem
+    \item implementacja algorytmu pozwalającego na autonomiczne poruszanie
+    \item napisanie aplikacji rysującej mapę pomieszczenia działającej na komputerze lub laptopie
+\end{itemize}
+
+
+\section{Koncepcja projektu}
+Po pierwsze robot powinien posiadać zasilanie akumulatorowe - w przeciwnym wypadku wymagałby podania zasilania za pośrednictwem przewodu, co byłoby niepraktyczne. Aby zasilania starczyło na jak najwięcej czasu dobrze by było, aby nie wykorzystywał zgromadzonej energii na obliczenia, które mogą zostać wykonane po stronie aplikacji go kontrolującej. Z tego względu do kontroli peryferiów platformy został wykorzystany mikrokontroler.
+
+Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania korzystające z lasera obracającego się na podstawie , jednak są na tyle kosztowne, że zdecydowano się na tańszą alternatywę. Sensor odległości zamontowany na wieżyczce obracającej się za pomocą serwomechanizmu  w zakresie od 0 do 180 stopni jest wystarczający do realizacji tego zadania.
+
+Żeby pozycja wcześniej wspomnianych punktów była relatywna do pomieszczenia platforma powinna realizować zadanie nawigacji zliczeniowej (odometrii). Dzięki temu możliwe jest oszacowanie aktualnej pozycji i skierowania robota w przestrzeni względem jego pozycji startowej. Dopiero korzystając z tych danych połączonych z dystansem i kierunkiem do przeszkody można umieścić ją na mapie. Do realizacji tej funkcji robot został wyposażony w mechaniczne enkodery, po jednym na lewą i prawą stronę.
+
+Dla mniejszego poślizgu oraz łatwego pokonywania niewielkich, nieznaczących przeszkód takich jak przewody, listwy zasilające, dywaniki oraz dla ułatwienia obliczeń związanych z odometrią robot porusza się na gąsienicach.
+
+Należy również ustalić w jakim języku programowania napisane będą programy - wszakże w zależności od środowiska programista powinien spodziewać się innych możliwości i ograniczeń. Ze względu na możliwość szybkiego prototypowania i czytelność kodu do napisania oprogramowania PC wybrany został język Python. Do zaprogramowania robota autor wybrał język C++.
+
+\section{Przegląd technologii}
+Nie jest tajemnicą że inspiracją do tego projektu była rozwijająca się już od ponad dwóch dekad branża robotycznych odkurzaczy. Oczywiście nie jest to jedyna sfera w której implementowane są algorytmy autonomicznej jazdy i mapowania. Nie mniej jednak podczas poszukiwań to na tym autor skupił swoją uwagę stąd ostatecznie wybrana technologia jest jedną z wykorzystywanych właśnie w tym segmencie. Warto jednak nadać pewien rys historii rozwoju tej branży i technologii które były stosowane.
+
+Pierwszym komercyjnie dostępnym robotem odkurzającym był ElectroluX Trilobile. Robot ten był wyposażony w sensory ultradźwiękowe dzięki czemu zachowywał odstęp od ścian. Sensory takie nie były wystarczające - ostre obiekty bądź takie o niewielkiej powierzchni mogły zostać przeoczone dlatego też dodatkowo miał on zderzak wciskający się podczas kontaktu z przeszkodą. Do tego wykrywał on uskoki takie jak np. schody za pomocą podczerwonego sensora odległości a także był w stanie omijać strefy ręcznie wyznaczone magnetycznymi paskami umieszczonymi na powierzchni czyszczonej. Z czasem również konkurencja zaczęła się wdrażać w rynek i oferować podobne rozwiązania.
+
+Pierwsze odkurzacze nie korzystały z zaawansowanych algorytmów nawigacji, mając do dyspozycji jedynie ograniczony zasób informacji o otaczającym je środowisku ze względu na proste czujniki w nich montowane. Poruszały się one w sposób wręcz chaotyczny, ``odbijając`` się od przeszkód pod różnymi kątami, nie czyszcząc równomiernie całej powierzchni. Nie mniej jednak takie rozwiązanie było na dane czasy wystarczające i samo w sobie bardzo innowacyjne - zwalniało użytkownika z konieczności odkurzania ręcznego.
+
+Z biegiem lat, rozwojem algorytmów nawigacji oraz (co najważniejsze w kontekście sprzedaży urządzeń na rynku konsumenckim) taniejącą elektroniką i coraz mniej kosztownymi sensorami zaczęto implementować bardziej złożone rozwiązania. Na dzień dzisiejszy inteligentne odkurzacze korzystają z dwóch technologii:
+\begin{itemize}
+\item SLAM - za pomocą laserowego sensora robot mierzy odległość od swojego punktu do przeszkód wokół. Zmierzone odległości jest w stanie przenieść na mapę. Mapa może być widoczna z poziomu aplikacji zarządzającej robotem i służyć np. do wyznaczania stref które ma omijać. Ponadto pozwoli mu odnaleźć się w danym domu i wyznaczyć sobie ścieżkę, obliczyć bieżący procent wykonanej pracy czy też wrócić do bazy ładującej
+\item VSLAM (Visual SLAM) - w tym wypadku robot jest wyposażony w kamerę skierowaną bezpośrednio na sufit lub pod kątem. Dzięki zaawansowanym algorytmom przetwarzania obrazu wybiera on pewne punkty odniesienia na podstawie których szacuje swoją pozycję względem otoczenia. Technologia wymaga wyższej mocy obliczeniowej i jest mniej dokładna, nie mniej jednak pozostawia otwarte pole na innowacje w zakresie sztucznej inteligencji i rozpoznawania typu obiektów.
+\end{itemize}
+
+W niniejszej pracy wykorzystany będzie jeden z algorytmów działających w technologii SLAM. 
+
+
+%to tez mozna gdzies umiescic ale lepiej chyba w rozdziale "projekt"
+% Jako że niniejsza praca dotyczy tworzenia mapy pokoju, a większość pokojów nie posiada uskoków, schodów i tym pododnych, pominięty zostanie aspekt wykrywania i omijania krawędzi. Również pod uwagę nie będzie brane zagadnienie wyznaczania stref zabronionych, czyli takich które robot powinien unikać.
