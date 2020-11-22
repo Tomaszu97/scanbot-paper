@@ -1,14 +1,179 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
 \subsection{Struktura oprogramowania}
->TODO dac jakies UMLe itd
+Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie Xubuntu 20.04. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
 
-\subsection{Autonomiczna jazda}
->TODO tu napisać o swoim algorytmie, dac rysunek stref
+\subsubsection{Okno główne programu}
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/main-app-view-3.PNG}
+	\caption{Okno główne aplikacji sterującej}
+	\label{fig:app-main-window}
+\end{figure}
 
-Algorytm autonomicznej jazdy został napisany po stronie aplikacji sterującej na komputerze PC. Kieruje się on bardzo prostymi regułami i pozwala na samodzielne poruszanie się platformy w warunkach domowych, omijania przeszkód i zgrubnego podążania za ścianami bądź też w pobliżu innych przeszkód.
+Okno główne zostało podzielone na segmenty oraz zakładki w celu odseparowania poszczególnych funkcjonalności. Opis poszczególnych sekcji:
 
-Zasada działania algorytmu jest bardzo prosta i opiera się na wykrywaniu przeszkód w wyznaczonych strefach i decyzji o podjętych ruchach.
+Sekcja \emph{CONNECTION} dotyczy połączenia portu szeregowego i zawiera elementy takie jak:
+\begin{itemize}
+    \item Lista rozwijana do wyboru portu szeregowego do którego wpięty jest konwerter USB-UART
+    \item Przycisk \emph{refresh} odświeża listę
+    \item Przycisk \emph{connect} inicjuje połączenie
+    \item Ikona statusu połączenia - krzyżyk oznacza jego brak, zegarek oznacza oczekiwanie a symbol fajki oznacza zainicjowane połączenie
+\end{itemize}
+
+Sekcja \emph{RAW CONTROL} zawiera kontrolki sterujące robotem. Przytrzymanie każdego z przycisków odpowiada ruchowi robota w przód i w tył (kolejno strzałki w górę i w dół) lub obrotowi w lewo i w prawo (strzałki w lewo i w prawo). Po puszczeniu przycisku platforma zatrzymuje się bez zwłoki. Suwak służy do ustawiania pozycji wieżyczki pomiarowej, jest wyskalowany w stopniach.
+\\
+
+Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduję się w rozdziale >TODO dac refa to miejsca gdzie to jest obszernie wytlumaczone)
+\\
+
+Sekcja \emph{CONSOLE} pozwala na ręczne sterowanie robotem za pośrednictwem komend. Tutaj należy zaznaczyć że wszysktie funkcje sterujące oferowane przez program korzystają z tych komend odpowiednio je formułując i wysyłając do jednostki mobilnej. Pole tekstowe podpisane \emph{command line} służy do wprowadzania komendy, która jest wysyłana po kliknięciu przycisku \emph{SEND}.
+Owa komenda pojawi się wtedy w polu tekstowym poniżej oznaczonym \emph{output}. Przycisk \emph{CLEAR BUFFER} wyczyści okno podglądu wraz z buforem nadawczym i odbiorczym, co przydaje się przy (na szczęście bardzo rzadkich) problemach z zerwaną komunikacją lub utratą synchronizacji sekwencji przesyłanych komend i odpowiedzi.
+\\
+
+Sekcja \emph{BASIC FUNCTIONS} posiada kolekcję przycisków wykonujących podstawowe funkcje robota niezwiązane z poruszaniem.
+\begin{itemize}
+    \item \emph{BEEP} powoduje wydanie 3 krótkich dźwięków przez robota
+    \item \emph{PRINT DUCK} rysuje małą kaczkę na ekranie
+    \item \emph{GET\_DISTANCE} mierzy i zwraca odległość od robota do przeszkody na którą aktualnie wycelowana jest wieżyczka
+    \item \emph{GET\_AZIMUTH} mierzy i zwraca azymut w którym skierowany jest robot
+    \item \emph{GET\_MAG} zwraca surowe dane z magnetometru (osie X i Y)
+    \item \emph{GET\_MAG\_CAL} zwraca dane kalibracji magnetometru
+    \item \emph{SCAN} skanuje otoczenie (obraca wieżyczkę i dokonuje serii 180 pomiarów odległości), po czym zwraca zmierzone wartości
+    \item \emph{KILL} odłącza sygnał sterujący od serwomechanizmów
+\end{itemize}
+
+Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zadań
+\begin{itemize}
+    \item \emph{AUTO DRIVE} załącza algorytm autonomiczej jazdy robota
+    \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtra Kalmana zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
+\end{itemize}
+
+Zakładka \emph{map} zawiera wykres który służy do wyświetlania zmierzonych punktów na układzie współrzędnych
+
+Zakładka \emph{raw output} zawiera pełnowymiarowy podgląd na historię wysyłanych i odbieranych danych. Jest większą wersją okienka \emph{output} sekcji \emph{CONSOLE}
+
+Zakładka \emph{magnetometer calibration} zawiera zestaw elementów wykorzystywanych do kalibracji magnetometru. Więcej o tej zakładce jak i o przebiegu kalibracji w podrozdziale \ref{sec:mag_cal}.
+
+\subsubsection{Program RViz}
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/main-app-view-4.PNG}
+	\caption{Okno programu RViz}
+	\label{fig:rviz-window}
+\end{figure}
+
+Z okna głównego programu RViz należy zwrócić uwagę jedynie na podgląd układu współrzędnych po prawej stronie okna. Wszystkie parametry są ustawiane automatycznie wraz ze startem aplikacji, nie ma potrzeby żadnej ręcznej konfiguracji. Więcej informacji o tym programie dostępne jest na stronie internetowej \cite{rviz}.
+
+\subsubsection{Środowisko sterujące}
+\label{sec:ros-env}
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/pc-application-infrastructure.png}
+	\caption{Struktura środowiska ROS}
+	\label{fig:pc-app-ros-infrastructure}
+\end{figure}
+
+Aplikacja komputerowa po uruchomieniu w środowisku ROS widoczna jest jako jeden z węzłów (node). W celu sporządzania mapy komunikuje się z innymi węzłami za pośrednictwem tematów (topics).
+Na Rys. \ref{fig:pc-app-ros-infrastructure} ukazany jest schemat komunikacji poszczególnych węzłów.
+Wykorzystywane są trzy tematy:
+\begin{itemize}
+    \item \emph{tf} jest tematem na którym publikowane są wszelkie translacje, czyli zależności między układami odniesienia
+    \item \emph{scan} - tutaj publikowane są wyniki pomiarów odległości po wykonaniu skanu przez robota
+    \item \emph{map} - na tym temacie pojawiają się dane reprezentujące mapę, wygenerowane przez algorytm \emph{gmapping}\cite{Grisetti2005}\cite{gmapping-website}\cite{gmapping-ros}
+\end{itemize}
+
+Ramki (frames), czyli w terminologii stosowanej w ROS układy odniesienia, a konkretnie ich względna pozycja są reprezentowane za pomocą wektorów zawierających dane o przesunięciu jak i obrocie. Więcej informacji na temat szczegółowego działania ramek można zasięgnąć na stronie internetowej ROS'a\cite{ros}. W niniejszym projekcie wykorzystywane są 4 ramki:
+\begin{itemize}
+    \item \emph{map} to główny układ odniesienia względem którego rysowana jest mapa
+    \item \emph{odom} jest punktem odniesienia względem którego działa algorytm nawigacji zliczeniowej
+    \item \emph{base_link} odnosi się do bazy pojazdu, tj. środka względem którego się obraca podczas zakręcania
+    \item \emph{base_laser} to pozycja sensora skanującego
+\end{itemize}
+Wsyzstkie translacje między ramkami publikowane są na temacie \emph{tf}.
+
+Węzeł \emph{laser\_static\_pod\_broadcaster} cyklicznie publikuje informację o położeniu modułu skanującego względem bazy robota. Jako że znajduje się ona bezpośrednio nad środkiem obrotu platformy, a sporządzana mapa jest dwuwymiarowa, jest to wektor zerowy.
+
+Węzeł \emph{scanbot\_communicator} publikuje swoją pozycję na temacie \emph{tf} oraz podczas wykonywania skanu na kanale \emph{scan}.
+
+Węzeł \emph{slam\_gmapping} subskrybuje kanały \emph{tf} i \emph{scan}. Na ich podstawie odpowiednio filtrując punkty uzyskane z pomiarów i dopasowując je do poprzednich algorytm tworzy mapę przeszkód widzianych przez robota.
+
+Węzeł \emph{rviz} reprezentuje program RViz i subskrybuje dwa tematy - \emph{tf} oraz \emph{map}. Pozycje układów odniesienia reprezentowane są prze trójkolorowe trójwymiarowe obiekty, gdzie każdy z kolorów odpowiada jednej z osi (czerwony, zielony, niebieski odpowiadają kolejno osiom X, Y oraz Z). Ich położenie jest znane dzięki subskrypcji pierwszego z wymienionych tematów. Za pomocą danych przychodzących z drugiego z nich, program rysuje mapę pomieszczenia.
+
+
+\subsubsection{Struktura aplikacji sterującej}
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/pc-application-simplified-uml.png}
+	\caption{Uproszczony diagram kluczowych klas aplikacji}
+	\label{fig:simple-class-diagram}
+\end{figure}
+
+W tej sekcji przedstawiony zostanie zarys najbardziej znaczących klas aplikacji sterującej. Jako że sama jej budowa nie jest kluczowym aspektem niniejszej pracy, dlatego po szczegółowe informacje dotyczące jej funkcjonowania autor odsyła do kodu źródłowego znajdującego się w dodatku A.
+
+Na diagramie \ref{fig:simple-class-diagram} ukazano najważniejsze klasy głównego programu. Głównym obiektem jest tutaj okno, instancja klasy \emph{MainWindow}. Tutaj obsłużone jest kreowanie interfejsu graficznego, czyli ustawienie przycisków, pól tekstowych i innych elementów w odpowiednich miejscach, nadanie im identyfikatorów, ustawienie ciągów tekstowych, suwaków i innych elementów graficznych. Również akcje towarzyszące kliknięciom przycisków i przesuwaniu suwaków są tutaj przypisywane do odpowiednich funkcji. Funkcje te dla lepszej organizacji oraz czytelności zostały przeniesione do innych klas zorientowanych wokół konkretnych segmentów pracy aplikacji. Obiekty tych klas dostępne są poprzez zmienne wewnątrz głównej klasy.
+\\
+
+Klasa \emph{MagCalPlot} obsługuje szereg funkcji związanych z kalibracją magnetometru \ref{sec:mag_cal}. Zawiera przyciski uruchamiające funkcje związane z:
+\begin{itemize}
+    \item Czyszczeniem wykresu
+    \item Rysowaniem zmierzonych danych w postaci punktów na wykresie
+    \item Automatycznym pomiarem surowych danych z magnetometru
+    \item Ręcznym pomiarem surowych danych z magnetometru
+    \item Korekcją błędu \emph{hard iron}
+    \item Korekcją błędu \emph{soft iron}
+    \item Wysyłaniem danych kalibracyjnych do robota
+\end{itemize}
+
+Klasa \emph{PolePlots} obsługuje rysowanie punktów oraz czyszczenie wykresu zakładki \emph{map}. Przechowuje również dane o kolorach punktów jakie są na nim rysowane.
+
+Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, dodając warstwę abstrakcji na surowe komendy wydawane mobilnej platformie i rozszerzając je - przykładowo podczas każdego z wywołanych funkcją pomiarów azymutu, jest on od razu publikowany na temacie \emph{tf}. Dodatkowo, w tej klasie obsłużony jest pomiar azymutu za pośrednictwem filtra Kalmana \cite{Kedzierski2016}. Również tutaj obsłużone jest publikowanie danych z odometrii i wykonywanych skanów na odpowiednich tematach, opisanych wcześniej w sekcji \ref{sec:ros-env} jak i również algorytm samodzielnej jazdy robota.
+
+Klasa \emph{SerialConnection} służy do obsługi komunikacji interfejsu szeregowego konwertera USB-UART. Zawiera funkcje służące do nawiązywania połączenia, wysyłania komend i odbierania odpowiedzi od robota. Ponadto posiada uchwyt do klasy głównej, dzięki czemu wymieniane dane prezentuje zarówno w polu tekstowym w sekcji okna \emph{CONSOLE} jak i w zakładce \emph{raw output}.
+
+\subsection{Jazda autonomiczna}
+W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - obot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na korelację z napisanym programem Rys. \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref:
+\begin{itemize}
+    \item \emph{FRONT ZONE} (strefa F)
+    \item \emph{LEFT ZONE 1} (strefa L1)
+    \item \emph{LEFT ZONE 2} (strefa L2)
+\end{itemize}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/autodrive-zones.png}
+	\caption{Strefy algorytmu jazdy autonomicznej}
+	\label{fig:autodrive-zones}
+\end{figure}
+
+Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0 do 180 stopni, liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota. Rozmiary stref zostały zdefiniowane w kodzie źródłowym programu i empirycznie dostosowane do stanu w którym pozwalają osiągnąć zadowalający poziom pracy algorytmu.
+Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rys. \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione wartości.
+
+
+\begin{itemize}
+    \item zakres kątów obejmujących strefę \emph{F} to <70, 110>
+    \item zakres kątów obejmujących strefy \emph{L1} i \emph{L2} to <140, 180>
+    \item promień strefy \emph{F} wynosi 30 cm
+    \item promień strefy \emph{L1} wynosi 50 cm
+    \item strefa \emph{L2} jest wycinkiem zaczynającym się od promienia równego 70 cm, kończąca się na 90 cm
+    \item mały krok jazdy do przodu wynosi 10 cm
+    \item mały krok obrotu wynosi 10 stopni
+    \item duży krok obrotu wynosi 30 stopni
+\end{itemize}
+
+
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/autodrive-algorithm.png}
+	\caption{Algorytm jazdy autonomicznej}
+	\label{fig:autodrive-algorithm}
+\end{figure}
+
+
+
+
+
 
 \subsection{Skan otoczenia}
 >TODO tu napisac o bazowym mapowaniu pkt na plaszczyzne
@@ -20,6 +185,7 @@ ale zdecydowano ze gmapper jest spoko i czemu nie gmapper
 
 \subsection{Odometria}
 \subsubsection{Kalibracja magnetometru}
+\label{sec:mag_cal}
 >TODO koniecznie daj screenshoty
 opisz hard i soft iron offset
 powiedz o filtrze kalmana
@@ -37,6 +203,7 @@ oraz komitetu centralnego
 a jakże
 
 \section{Firmware}
+\label{sec:firmware}
 >TODO powiedziec o ograniczeniach wynikajacych ze stosowania
 mikrokontrolera, o srodowisku stm z ktorego nie skorzystalem
 o srodowisku stm32duino o tym ze stm32 jest szybsze i wgl
@@ -48,3 +215,8 @@ wyjasnij ze gasienice upraszczamy do 2 kolek
 
 \section{Schemat elektroniczny}
 >TODO wspomnij o sensorach ultradzw oraz sharp IR
+
+
+
+% to trzeba wrzucic gdzies moze do opisu widoku okna rviz?
+% Aktualną pozycję można zaobserwować w drugim oknie, w widoku mapy jako obiekt z etykietą \emph{base_link} - podczas jazdy jego pozycja jest aktualizowana względem etykiety \emph{odom}.
