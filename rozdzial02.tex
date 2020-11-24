@@ -1,7 +1,7 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
 \subsection{Struktura oprogramowania}
-Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie Xubuntu 20.04. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
+Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
 
 \subsubsection{Okno główne programu}
 \begin{figure}[ht]
@@ -24,7 +24,7 @@ Sekcja \emph{CONNECTION} dotyczy połączenia portu szeregowego i zawiera elemen
 Sekcja \emph{RAW CONTROL} zawiera kontrolki sterujące robotem. Przytrzymanie każdego z przycisków odpowiada ruchowi robota w przód i w tył (kolejno strzałki w górę i w dół) lub obrotowi w lewo i w prawo (strzałki w lewo i w prawo). Po puszczeniu przycisku platforma zatrzymuje się bez zwłoki. Suwak służy do ustawiania pozycji wieżyczki pomiarowej, jest wyskalowany w stopniach.
 \\
 
-Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduję się w rozdziale >TODO dac refa to miejsca gdzie to jest obszernie wytlumaczone)
+Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduję się w rozdziale [>TODO dac ref do miejsca gdzie to będzie obszernie wytłumaczone].
 \\
 
 Sekcja \emph{CONSOLE} pozwala na ręczne sterowanie robotem za pośrednictwem komend. Tutaj należy zaznaczyć że wszysktie funkcje sterujące oferowane przez program korzystają z tych komend odpowiednio je formułując i wysyłając do jednostki mobilnej. Pole tekstowe podpisane \emph{command line} służy do wprowadzania komendy, która jest wysyłana po kliknięciu przycisku \emph{SEND}.
@@ -46,7 +46,7 @@ Sekcja \emph{BASIC FUNCTIONS} posiada kolekcję przycisków wykonujących podsta
 Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zadań
 \begin{itemize}
     \item \emph{AUTO DRIVE} załącza algorytm autonomiczej jazdy robota
-    \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtra Kalmana zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
+    \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtru Kalmana\cite{Kedzierski2016} zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
 \end{itemize}
 
 Zakładka \emph{map} zawiera wykres który służy do wyświetlania zmierzonych punktów na układzie współrzędnych
@@ -64,12 +64,13 @@ Zakładka \emph{magnetometer calibration} zawiera zestaw elementów wykorzystywa
 \end{figure}
 
 Z okna głównego programu RViz należy zwrócić uwagę jedynie na podgląd układu współrzędnych po prawej stronie okna. Wszystkie parametry są ustawiane automatycznie wraz ze startem aplikacji, nie ma potrzeby żadnej ręcznej konfiguracji. Więcej informacji o tym programie dostępne jest na stronie internetowej \cite{rviz}.
+Podczas pracy programu aktualna pozycja robota jest reprezentowana jako obiekt z etykietą \emph{base\_link} - podczas jazdy jego pozycja jest aktualizowana względem etykiety \emph{odom}. Na początku wszystkie układy współrzędnych są w pozycji zerowej i się nakładają.
 
 \subsubsection{Środowisko sterujące}
 \label{sec:ros-env}
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=1\linewidth]{rys/pc-application-infrastructure.png}
+		\includegraphics[width=1\linewidth]{rys/pc-application-infrastructure.pdf}
 	\caption{Struktura środowiska ROS}
 	\label{fig:pc-app-ros-infrastructure}
 \end{figure}
@@ -87,8 +88,8 @@ Ramki (frames), czyli w terminologii stosowanej w ROS układy odniesienia, a kon
 \begin{itemize}
     \item \emph{map} to główny układ odniesienia względem którego rysowana jest mapa
     \item \emph{odom} jest punktem odniesienia względem którego działa algorytm nawigacji zliczeniowej
-    \item \emph{base_link} odnosi się do bazy pojazdu, tj. środka względem którego się obraca podczas zakręcania
-    \item \emph{base_laser} to pozycja sensora skanującego
+    \item \emph{base\_link} odnosi się do bazy pojazdu, tj. środka względem którego się obraca podczas zakręcania
+    \item \emph{base\_laser} to pozycja sensora skanującego
 \end{itemize}
 Wsyzstkie translacje między ramkami publikowane są na temacie \emph{tf}.
 
@@ -104,7 +105,7 @@ Węzeł \emph{rviz} reprezentuje program RViz i subskrybuje dwa tematy - \emph{t
 \subsubsection{Struktura aplikacji sterującej}
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/pc-application-simplified-uml.png}
+		\includegraphics[width=0.8\linewidth]{rys/pc-application-simplified-uml.pdf}
 	\caption{Uproszczony diagram kluczowych klas aplikacji}
 	\label{fig:simple-class-diagram}
 \end{figure}
@@ -120,19 +121,19 @@ Klasa \emph{MagCalPlot} obsługuje szereg funkcji związanych z kalibracją magn
     \item Rysowaniem zmierzonych danych w postaci punktów na wykresie
     \item Automatycznym pomiarem surowych danych z magnetometru
     \item Ręcznym pomiarem surowych danych z magnetometru
-    \item Korekcją błędu \emph{hard iron}
-    \item Korekcją błędu \emph{soft iron}
+    \item Korekcją błędu \emph{hard iron} \cite{hard-iron} \cite{hard-soft-iron}
+    \item Korekcją błędu \emph{soft iron} \cite{hard-soft-iron}
     \item Wysyłaniem danych kalibracyjnych do robota
 \end{itemize}
 
 Klasa \emph{PolePlots} obsługuje rysowanie punktów oraz czyszczenie wykresu zakładki \emph{map}. Przechowuje również dane o kolorach punktów jakie są na nim rysowane.
 
-Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, dodając warstwę abstrakcji na surowe komendy wydawane mobilnej platformie i rozszerzając je - przykładowo podczas każdego z wywołanych funkcją pomiarów azymutu, jest on od razu publikowany na temacie \emph{tf}. Dodatkowo, w tej klasie obsłużony jest pomiar azymutu za pośrednictwem filtra Kalmana \cite{Kedzierski2016}. Również tutaj obsłużone jest publikowanie danych z odometrii i wykonywanych skanów na odpowiednich tematach, opisanych wcześniej w sekcji \ref{sec:ros-env} jak i również algorytm samodzielnej jazdy robota.
+Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, dodając warstwę abstrakcji na surowe komendy wydawane mobilnej platformie i rozszerzając je - przykładowo podczas każdego z wywołanych funkcją pomiarów azymutu, jest on od razu publikowany na temacie \emph{tf}. Dodatkowo, w tej klasie obsłużony jest pomiar azymutu za pośrednictwem filtru Kalmana \cite{Kedzierski2016}. Również tutaj obsłużone jest publikowanie danych z odometrii i wykonywanych skanów na odpowiednich tematach, opisanych wcześniej w sekcji \ref{sec:ros-env} jak i również algorytm samodzielnej jazdy robota.
 
 Klasa \emph{SerialConnection} służy do obsługi komunikacji interfejsu szeregowego konwertera USB-UART. Zawiera funkcje służące do nawiązywania połączenia, wysyłania komend i odbierania odpowiedzi od robota. Ponadto posiada uchwyt do klasy głównej, dzięki czemu wymieniane dane prezentuje zarówno w polu tekstowym w sekcji okna \emph{CONSOLE} jak i w zakładce \emph{raw output}.
 
 \subsection{Jazda autonomiczna}
-W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - obot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na korelację z napisanym programem Rys. \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref:
+W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem Rys. \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
 \begin{itemize}
     \item \emph{FRONT ZONE} (strefa F)
     \item \emph{LEFT ZONE 1} (strefa L1)
@@ -146,9 +147,10 @@ W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algory
 	\label{fig:autodrive-zones}
 \end{figure}
 
-Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0 do 180 stopni, liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota. Rozmiary stref zostały zdefiniowane w kodzie źródłowym programu i empirycznie dostosowane do stanu w którym pozwalają osiągnąć zadowalający poziom pracy algorytmu.
-Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rys. \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione wartości.
-
+Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0 do 180 stopni, liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota.
+\\
+Wymiary stref zostały dobrane metodą prób i błędów, dostrajane do momentu w którym robot był w stanie samodzielnie okrążyć pokój bez wjeżdżania w przeszkody.
+Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rys. \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione poniżej wartości.
 
 \begin{itemize}
     \item zakres kątów obejmujących strefę \emph{F} to <70, 110>
@@ -161,62 +163,76 @@ Wielkości kroków to kolejne z parametrów którymi można regulować jakość 
     \item duży krok obrotu wynosi 30 stopni
 \end{itemize}
 
-
-
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=1\linewidth]{rys/autodrive-algorithm.png}
+		\includegraphics[width=1\linewidth]{rys/autodrive-algorithm.pdf}
 	\caption{Algorytm jazdy autonomicznej}
 	\label{fig:autodrive-algorithm}
 \end{figure}
 
-
-
-
-
-
-\subsection{Skan otoczenia}
->TODO tu napisac o bazowym mapowaniu pkt na plaszczyzne
-o swojej implementacji ze scorem
-nastepnie o tym co moznaby dalej (translacja korekta)
-ale nie zostalo zrobione bo bylo slabe i to wymaga filtrow czasteczek
-i ze jest cos takiego jak cartographer od googla
-ale zdecydowano ze gmapper jest spoko i czemu nie gmapper
-
-\subsection{Odometria}
-\subsubsection{Kalibracja magnetometru}
-\label{sec:mag_cal}
->TODO koniecznie daj screenshoty
-opisz hard i soft iron offset
-powiedz o filtrze kalmana
-
-\subsubsection{UMBenchmark\cite{Borenstein1995}}
->TODO tu dac fotki koniecznie
-jakies rysunki nabazgrane z kwadratami
-i powiedziec ze sie nie pokrywalo najlepiej
-dac tabelke z pozycjami
-pokazac obliczenia center of gravity itd
-ej wyszlo ~1% czyli to bez sensu
-robot juz jezdzi dobrze
-to zasługa wielkiego myśliciela autora tego tekstu
-oraz komitetu centralnego
-a jakże
-
 \section{Firmware}
 \label{sec:firmware}
->TODO powiedziec o ograniczeniach wynikajacych ze stosowania
-mikrokontrolera, o srodowisku stm z ktorego nie skorzystalem
-o srodowisku stm32duino o tym ze stm32 jest szybsze i wgl
-super bo to wszystko zre mniej pradu niz rasp i nie ma problemu kiedy zasilanie spada
+Dzięki zastosowaniu mikrokontrolera jako jednostki sterującej mobilną platformą skanującą zużycie prądu jest bardzo małe (bez peryferiów zużywa <51mA\cite{stm32-datasheet}). Nakłada to niestety ograniczenia związane z mocą obliczeniową urządzenia i dostępną pamięcią w której przechowywany jest program. 
+
+Pierwszym kierunkiem w którym udał się autor były popularne dziś płytki Arduino\cite{arduino-boards}, czego głównym powodem jest łatwość szybkiego prototypowania i szeroki wachlarz gotowych rozwiązań obsługujących różne sensory, serwomechanizmy, wyświetlacze i wiele innych. Płytka nie powinna być zbyt duża, dlatego na uwadze były mniejsze egzemplarze takie jak np. Arduino Nano. Jednak ze względu na niskie taktowanie procesora (16MHz) i niewiele pamięci Flash (32kB) na program wybrana została alternatywa - tzw. płytka ``blue pill``\cite{bluepill}. Jest to nieoficjalna płytka, podobna do Arduino. Można ją zaś programować w tym samym środowisku i wykorzystywać wiele (choć nie wszystkie) z bibliotek napisanych pod oficjalnie wspierane płytki. Jest tak dzięki zestawowi bibliotek STM32duino \cite{stm32duino-github} zapewniających kompatybilność z wcześniej wspomnianym środowiskiem. Do kompilacji i wgrania programu zostało wykorzystane kompatybilne z Arduino - PlatformIO IDE \cite{platformio}.
+\\
+
+Program działający na platformie wykonuje jedynie proste polecenia odebrane od aplikacji sterującej i odpowiada prostym potwierdzeniem, wartością lub listą wartości. Poniżej wylistowano polecenia:
+
+\begin{enumerate}
+    \item \emph{DRIVE} - ustaw zadaną prędkość na gąsienicach
+    \item \emph{ROTATE\_TOWER} - obróć wieżyczkę na żądaną pozycję
+    \item \emph{KILL} - odłącz sygnał sterujący od serwomechanizmów
+    \item \emph{PRINT} - pokaż tekst na wyświetlaczu
+    \item \emph{BEEP} - wydaj serię dźwięków o zdefiniowanej liczbie i czasie trwania
+    \item \emph{GET\_MAG} - zwróć surowy pomiar z osi X i Y magnetometru
+    \item \emph{GET\_AZIMUTH} - zwróc azymut w którym skierowany jest robot
+    \item \emph{GET\_DISTANCE} - zmierz odległość od przeszkody
+    \item \emph{GET\_TIME} - zwróć wartość czasu w milisekundach od uruchomienia robota
+    \item \emph{MOVE} - przemieść się o zadany dystans do przodu lub do tyłu
+    \item \emph{ROTATE\_TO} - obróć się na zadany azymut
+    \item \emph{ROTATE} - obróć się o kąt
+    \item \emph{SCAN} - skanuj otoczenie
+    \item \emph{SET\_MAG\_CAL} - ustaw wartości do kalibracji magnetometru
+    \item \emph{GET\_MAG\_CAL} - pobierz wartości kalibracji
+    \item \emph{RESET} - uruchom ponownie robota
+\end{enumerate}
+
+
 
 \section{Schemat budowy mechanicznej}
->TODO powiedz co sie zmienialo, jaki jest problem z gasienicami
-wyjasnij ze gasienice upraszczamy do 2 kolek
+Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynnikó
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.5\linewidth]{rys/view1.png}
+	\caption{Rzut główny platformy}
+	\label{fig:view1}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.5\linewidth]{rys/view2.png}
+	\caption{Rzut platformy z prawej strony}
+	\label{fig:view2}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.5\linewidth]{rys/view3.png}
+	\caption{Rzut platformy z góry}
+	\label{fig:view3}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.5\linewidth]{rys/tracks-final.png}
+	\caption{Rzut izometryczny gąsienicy}
+	\label{fig:tracks}
+\end{figure}
+
 
 \section{Schemat elektroniczny}
->TODO wspomnij o sensorach ultradzw oraz sharp IR
+%[>TODO wspomnij o sensorach ultradzw oraz sharp IR]
 
 
-
-% to trzeba wrzucic gdzies moze do opisu widoku okna rviz?
-% Aktualną pozycję można zaobserwować w drugim oknie, w widoku mapy jako obiekt z etykietą \emph{base_link} - podczas jazdy jego pozycja jest aktualizowana względem etykiety \emph{odom}.

@@ -1,17 +1,40 @@
 \chapter{Ewaluacja}
->TODO wymysl jakies podrozdziały tutaj
 
->TODO nawiaz do wczesniej wspomnianych rzeczy
-powiedz co po kolei jak sie zmieniało
-z czym były problemy
-o tutaj mala podpowiedz:
+\subsection{Skan otoczenia}
+%>TODO tu napisac o bazowym mapowaniu pkt na plaszczyzne
+%o swojej implementacji ze scorem
+%nastepnie o tym co moznaby dalej (translacja korekta)
+%ale nie zostalo zrobione bo bylo slabe i to wymaga filtrow czasteczek
+%i ze jest cos takiego jak cartographer od googla
+%ale zdecydowano ze gmapper jest spoko i czemu nie gmapper
 
-sensor dzwieku jest do kitu za duza fluktuacja pluz ogromny kąt plus za duzy blad pomiaru plus za dlugi pomiar
-sharp mniejszy kąt mniejsza fluktuacja krotki pomiar ale podatnosc na swiatlo
-lidar super miodzio
-serwo kiepskie i wibruje/zacina się co powoduje błędy na krawędziach
-magnetometr-biblioteka koryguje jedynie hard iron i jest do kitu
-ze wzgledu na moc obliczeniowa najlepiej bylo samemu zaimplementowac soft i hard iron
-zeby bylo prosciej tylko 2 wymiary, niestety nie kompensujemy tiltu. ale i tak zalozenie jest ze jezdzimy po plaskim
+\subsection{Odometria}
+\subsubsection{Kalibracja magnetometru}
+\label{sec:mag_cal}
+%>TODO koniecznie daj screenshoty
+%opisz hard i soft iron offset
+%powiedz o filtrze kalmana
 
-używanie arcsin zamiast atan2 z ifami podowowało błąd że correction czasem obracał elipsę nie w tę stronę
+\subsubsection{UMBenchmark\cite{Borenstein1995}}
+%>TODO tu dac fotki koniecznie
+%jakies rysunki nabazgrane z kwadratami
+% i powiedziec ze sie nie pokrywalo najlepiej
+% dac tabelke z pozycjami
+% pokazac obliczenia center of gravity itd
+% wyszlo ~1proc czyli to bez sensu
+% wiec robot juz jezdzi wystarczajaco dobrze
+
+% >TODO nawiaz do wczesniej wspomnianych rzeczy
+% powiedz co po kolei jak sie zmieniało
+% z czym były problemy
+% o tutaj mala podpowiedz:
+
+% sensor dzwieku jest do kitu za duza fluktuacja pluz ogromny kąt plus za duzy blad pomiaru plus za dlugi pomiar
+% sharp mniejszy kąt mniejsza fluktuacja krotki pomiar ale podatnosc na swiatlo
+% lidar super miodzio
+% serwo kiepskie i wibruje/zacina się co powoduje błędy na krawędziach
+% magnetometr-biblioteka koryguje jedynie hard iron i jest do kitu
+% ze wzgledu na moc obliczeniowa najlepiej bylo samemu zaimplementowac soft i hard iron
+% zeby bylo prosciej tylko 2 wymiary, niestety nie kompensujemy tiltu. ale i tak zalozenie jest ze jezdzimy po plaskim
+
+% używanie arcsin zamiast atan2 z ifami podowowało błąd że correction czasem obracał elipsę nie w tę stronę
