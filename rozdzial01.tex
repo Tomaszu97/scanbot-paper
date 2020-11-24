@@ -26,9 +26,9 @@ Po pierwsze robot powinien posiadać zasilanie akumulatorowe - w przeciwnym wypa
 
 Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania takie jak RPLidar A1M8, lub RPLIDAR A2M6, korzystające z lasera obracającego się na podstawie, jednak są na tyle kosztowne, że ostatecznie zdecydowano się na tańszą alternatywę - Lidar TF Luna. Różnica w cenie tańszego z dwóch wymienionych wcześniej czujników a wybranego to na dzień dzisiejszy ponad 1500 złotych. Sensor odległości zamontowany na wieżyczce obracanej za pomocą serwomechanizmu  w zakresie od 0 do 180 stopni jest wystarczający do realizacji tego zadania.
 
-Żeby pozycja wcześniej wspomnianych punktów była odwzorowywała rozkład pomieszczenia platforma powinna realizować zadanie nawigacji zliczeniowej (odometrii). Dzięki temu możliwe jest oszacowanie aktualnej pozycji i przemieszczenia robota w przestrzeni względem jego pozycji startowej. Dopiero korzystając z tych danych połączonych z kierunkiem i dystansem do przeszkody można umieścić ją na mapie. Do realizacji tej funkcji robot został wyposażony w mechaniczne enkodery, po jednym na lewą i prawą stronę.
+Żeby pozycja wcześniej wspomnianych punktów była odwzorowywała rozkład pomieszczenia platforma powinna realizować zadanie nawigacji zliczeniowej (odometrii). Dzięki temu możliwe jest oszacowanie aktualnej pozycji i przemieszczenia robota w przestrzeni względem jego pozycji startowej. Dopiero korzystając z tych danych połączonych z kierunkiem i dystansem do przeszkody można umieścić ją na mapie.
 
-Dla mniejszego poślizgu oraz łatwego pokonywania niewielkich, nieznaczących przeszkód takich jak przewody, listwy zasilające, dywaniki oraz dla ułatwienia obliczeń związanych z odometrią robot porusza się na gąsienicach.
+Dla mniejszego poślizgu oraz łatwego pokonywania niewielkich, nieznaczących przeszkód takich jak przewody, listwy zasilające, dywaniki oraz dla ułatwienia obliczeń związanych z odometrią robot powinien być wyposażony w system napędowy o odpowiednio małym poślizgu.
 
 Należy również ustalić w jakim języku programowania napisane będą programy - wszakże w zależności od środowiska programista powinien spodziewać się innych możliwości i ograniczeń. Ze względu na możliwość szybkiego prototypowania i czytelność kodu do napisania oprogramowania PC wybrany został język Python\cite{python}. Do zaprogramowania robota autor wybrał język C++\cite{cpp}.
 
@@ -45,8 +45,6 @@ Z biegiem lat, rozwojem algorytmów nawigacji oraz (co najważniejsze w kontekś
 \item VSLAM (Visual SLAM) - w tym wypadku robot jest wyposażony w kamerę skierowaną bezpośrednio na sufit lub pod kątem. Dzięki zaawansowanym algorytmom przetwarzania obrazu wybiera on pewne punkty odniesienia na podstawie których szacuje swoją pozycję względem otoczenia. Technologia wymaga wyższej mocy obliczeniowej i jest mniej dokładna, nie mniej jednak pozostawia otwarte pole na innowacje w zakresie sztucznej inteligencji i rozpoznawania typu obiektów.
 \end{itemize}
 
-Ze względu na niewielkie doświadczenie autora w dziedzinie komputerowego przetwarzania obrazów, w niniejszej pracy wykorzystany będzie jeden z algorytmów działających w technologii SLAM. 
+Ze względu na niewielkie doświadczenie autora w dziedzinie komputerowego przetwarzania obrazów, w niniejszej pracy wykorzystany będzie jeden z algorytmów działających w technologii SLAM.
 
-
-%to tez mozna gdzies umiescic ale lepiej chyba w rozdziale "projekt"
 % Jako że niniejsza praca dotyczy tworzenia mapy pokoju, a większość pokojów nie posiada uskoków, schodów i tym pododnych, pominięty zostanie aspekt wykrywania i omijania krawędzi. Również pod uwagę nie będzie brane zagadnienie wyznaczania stref zabronionych, czyli takich które robot powinien unikać.

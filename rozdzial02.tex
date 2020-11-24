@@ -1,6 +1,7 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
 \subsection{Struktura oprogramowania}
+>TODO czas przyszły, nie mów o ROSie i RViz jeszcze, to przyjdzie potem
 Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
 
 \subsubsection{Okno główne programu}
@@ -24,7 +25,7 @@ Sekcja \emph{CONNECTION} dotyczy połączenia portu szeregowego i zawiera elemen
 Sekcja \emph{RAW CONTROL} zawiera kontrolki sterujące robotem. Przytrzymanie każdego z przycisków odpowiada ruchowi robota w przód i w tył (kolejno strzałki w górę i w dół) lub obrotowi w lewo i w prawo (strzałki w lewo i w prawo). Po puszczeniu przycisku platforma zatrzymuje się bez zwłoki. Suwak służy do ustawiania pozycji wieżyczki pomiarowej, jest wyskalowany w stopniach.
 \\
 
-Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduję się w rozdziale [>TODO dac ref do miejsca gdzie to będzie obszernie wytłumaczone].
+Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduje się w rozdziale [>TODO dac ref do miejsca gdzie to będzie obszernie wytłumaczone].
 \\
 
 Sekcja \emph{CONSOLE} pozwala na ręczne sterowanie robotem za pośrednictwem komend. Tutaj należy zaznaczyć że wszysktie funkcje sterujące oferowane przez program korzystają z tych komend odpowiednio je formułując i wysyłając do jednostki mobilnej. Pole tekstowe podpisane \emph{command line} służy do wprowadzania komendy, która jest wysyłana po kliknięciu przycisku \emph{SEND}.
@@ -174,7 +175,7 @@ Wielkości kroków to kolejne z parametrów którymi można regulować jakość 
 \label{sec:firmware}
 Dzięki zastosowaniu mikrokontrolera jako jednostki sterującej mobilną platformą skanującą zużycie prądu jest bardzo małe (bez peryferiów zużywa <51mA\cite{stm32-datasheet}). Nakłada to niestety ograniczenia związane z mocą obliczeniową urządzenia i dostępną pamięcią w której przechowywany jest program. 
 
-Pierwszym kierunkiem w którym udał się autor były popularne dziś płytki Arduino\cite{arduino-boards}, czego głównym powodem jest łatwość szybkiego prototypowania i szeroki wachlarz gotowych rozwiązań obsługujących różne sensory, serwomechanizmy, wyświetlacze i wiele innych. Płytka nie powinna być zbyt duża, dlatego na uwadze były mniejsze egzemplarze takie jak np. Arduino Nano. Jednak ze względu na niskie taktowanie procesora (16MHz) i niewiele pamięci Flash (32kB) na program wybrana została alternatywa - tzw. płytka ``blue pill``\cite{bluepill}. Jest to nieoficjalna płytka, podobna do Arduino. Można ją zaś programować w tym samym środowisku i wykorzystywać wiele (choć nie wszystkie) z bibliotek napisanych pod oficjalnie wspierane płytki. Jest tak dzięki zestawowi bibliotek STM32duino \cite{stm32duino-github} zapewniających kompatybilność z wcześniej wspomnianym środowiskiem. Do kompilacji i wgrania programu zostało wykorzystane kompatybilne z Arduino - PlatformIO IDE \cite{platformio}.
+Pierwszym kierunkiem w którym udał się autor były popularne dziś płytki Arduino, czego głównym powodem jest łatwość szybkiego prototypowania i szeroki wachlarz gotowych rozwiązań obsługujących różne sensory, serwomechanizmy, wyświetlacze i wiele innych. Płytka nie powinna być zbyt duża, dlatego na uwadze były mniejsze egzemplarze takie jak np. Arduino Nano. Jednak ze względu na niskie taktowanie procesora (16MHz) i niewiele pamięci Flash (32kB) na program wybrana została alternatywa - tzw. płytka ``blue pill``\cite{bluepill}. Jest to nieoficjalna płytka, podobna do Arduino. Można ją zaś programować w tym samym środowisku i wykorzystywać wiele (choć nie wszystkie) z bibliotek napisanych pod oficjalnie wspierane płytki. Jest tak dzięki zestawowi bibliotek STM32duino \cite{stm32duino-github} zapewniających kompatybilność z wcześniej wspomnianym środowiskiem. Do kompilacji i wgrania programu zostało wykorzystane kompatybilne z Arduino - PlatformIO IDE \cite{platformio}.
 \\
 
 Program działający na platformie wykonuje jedynie proste polecenia odebrane od aplikacji sterującej i odpowiada prostym potwierdzeniem, wartością lub listą wartości. Poniżej wylistowano polecenia:
@@ -201,28 +202,49 @@ Program działający na platformie wykonuje jedynie proste polecenia odebrane od
 
 
 \section{Schemat budowy mechanicznej}
-Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynnikó
+Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
+\begin{enumerate}
+    \item poślizg kół pojazdu
+    \item bezwładność - brak możliwości niezwłocznego zatrzymania pojazdu w punkcie
+    \item niedokładność urządzeń pomiarowych wynikającą z ich fizycznych właściwości, m. in. szumów i zakłóceń
+\end{enumerate}
 
-\begin{figure}[ht]
+Do pierwszych dwóch wymienionych czynników bezpośrednio odwołuje się jedna z decyzji projektowych. W pojeździe zostanie zastosowany gąsienicowy układ bieżny. Zwiększenie powierzchni kontaktu z podłogą zapewni bardziej stabilny obrót i jazdę platformy. Pomoże również w szybszym jej zatrzymaniu. Do trzeciego punktu sam projekt mechaniczny nie ma żadnego odniesienia, ta kwestia zostanie omówiona w podrozdziale \ref{sec:kalman}.
+
+Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki projektu są dostępne w dodatku A \label{sec:disc-addon}. Rzuty projektu przedstawione są na rysunkach \ref{fig:view1}, \ref{fig:view2} i \ref{fig:view3}. Robot powstanie na drukarce 3D działającej w technologii FDM (ang. \emph{Fused Deposition Modeling}) z materiału PLA (ang. PolyLactic Acid).
+
+
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.5\linewidth]{rys/view1.png}
 	\caption{Rzut główny platformy}
 	\label{fig:view1}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.5\linewidth]{rys/view2.png}
 	\caption{Rzut platformy z prawej strony}
 	\label{fig:view2}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.5\linewidth]{rys/view3.png}
 	\caption{Rzut platformy z góry}
 	\label{fig:view3}
 \end{figure}
+
+Wieżyczka przedstawiona w rzucie izometrycznym na Rys. \ref{fig:tower} została zaprojektowana osobno. Sensor zostanie zamontowany w przesunięciu względem osi w celu częściowej redukcji jego martwej strefy. Powstanie w ten sam sposób i z tego samego materiału co reszta platformy.
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.5\linewidth]{rys/arm.png}
+	\caption{Rzut izometryczny wieżyczki}
+	\label{fig:tower}
+\end{figure}
+
+Gąsienica widoczna na Rys. \ref{fig:tracks} będzie wydrukowana w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne będą dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
 
 \begin{figure}[ht]
 	\centering
@@ -232,7 +254,14 @@ Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wyn
 \end{figure}
 
 
-\section{Schemat elektroniczny}
-%[>TODO wspomnij o sensorach ultradzw oraz sharp IR]
 
+\section{Schemat elektroniczny}
+>TODO napisac czemu bluetooth, czemu laser i czemu wszystkie inne elementy zostały wybrane
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/electronic-schematic.png}
+	\caption{Uproszczony schemat podłączonych do jednostki sterującej peryferiów}
+	\label{fig:electronic-schematic-simplified}
+\end{figure}
 
