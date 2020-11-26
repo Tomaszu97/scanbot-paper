@@ -148,7 +148,7 @@ W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algory
 	\label{fig:autodrive-zones}
 \end{figure}
 
-Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0 do 180 stopni, liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota.
+Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0° do 180° , liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota.
 \\
 Wymiary stref zostały dobrane metodą prób i błędów, dostrajane do momentu w którym robot był w stanie samodzielnie okrążyć pokój bez wjeżdżania w przeszkody.
 Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rys. \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione poniżej wartości.
@@ -160,8 +160,8 @@ Wielkości kroków to kolejne z parametrów którymi można regulować jakość 
     \item promień strefy \emph{L1} wynosi 50 cm
     \item strefa \emph{L2} jest wycinkiem zaczynającym się od promienia równego 70 cm, kończąca się na 90 cm
     \item mały krok jazdy do przodu wynosi 10 cm
-    \item mały krok obrotu wynosi 10 stopni
-    \item duży krok obrotu wynosi 30 stopni
+    \item mały krok obrotu wynosi 10°
+    \item duży krok obrotu wynosi 30°
 \end{itemize}
 
 \begin{figure}[ht]
@@ -199,7 +199,7 @@ Program działający na platformie wykonuje jedynie proste polecenia odebrane od
     \item \emph{RESET} - uruchom ponownie robota
 \end{enumerate}
 
-
+>TODO wyjaśnić parametry komend
 
 \section{Schemat budowy mechanicznej}
 Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
@@ -212,6 +212,9 @@ Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wyn
 Do pierwszych dwóch wymienionych czynników bezpośrednio odwołuje się jedna z decyzji projektowych. W pojeździe zostanie zastosowany gąsienicowy układ bieżny. Zwiększenie powierzchni kontaktu z podłogą zapewni bardziej stabilny obrót i jazdę platformy. Pomoże również w szybszym jej zatrzymaniu. Do trzeciego punktu sam projekt mechaniczny nie ma żadnego odniesienia, ta kwestia zostanie omówiona w podrozdziale \ref{sec:kalman}.
 
 Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki projektu są dostępne w dodatku A \label{sec:disc-addon}. Rzuty projektu przedstawione są na rysunkach \ref{fig:view1}, \ref{fig:view2} i \ref{fig:view3}. Robot powstanie na drukarce 3D działającej w technologii FDM (ang. \emph{Fused Deposition Modeling}) z materiału PLA (ang. PolyLactic Acid).
+
+>TODO powiedzieć o przeniesieniu napędu, enkoderach, przełożeniu
+>TODO powiedzieć o celu montowania wyświetlacza, przycisku wł. wył., sposobie ładowania i nacięciu wykonywanym z tyłu na przewody.
 
 
 \begin{figure}[H]
