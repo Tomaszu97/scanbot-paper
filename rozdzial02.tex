@@ -1,7 +1,9 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
 \subsection{Struktura oprogramowania}
->TODO czas przyszły, nie mów o ROSie i RViz jeszcze, to przyjdzie potem
+%>TODO czas przyszły, nie mów o ROSie i RViz jeszcze, to przyjdzie potem>wywal rviz i ros stad
+%>TODO opisz procedurę połączenia oraz jego schemat
+
 Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
 
 \subsubsection{Okno główne programu}
@@ -25,7 +27,7 @@ Sekcja \emph{CONNECTION} dotyczy połączenia portu szeregowego i zawiera elemen
 Sekcja \emph{RAW CONTROL} zawiera kontrolki sterujące robotem. Przytrzymanie każdego z przycisków odpowiada ruchowi robota w przód i w tył (kolejno strzałki w górę i w dół) lub obrotowi w lewo i w prawo (strzałki w lewo i w prawo). Po puszczeniu przycisku platforma zatrzymuje się bez zwłoki. Suwak służy do ustawiania pozycji wieżyczki pomiarowej, jest wyskalowany w stopniach.
 \\
 
-Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie jest użyte w odniesieniu do zmiennej trzymającej aktualny kąt skierowania robota, nie azymtu geograficznego. Więcej o tym znajduje się w rozdziale [>TODO dac ref do miejsca gdzie to będzie obszernie wytłumaczone].
+Sekcja \emph{ODOMETRIC CONTROL} służy do jazdy odometrycznej, tj. poruszając się za pomocą tych kontrolek uwzględniany jest przejechana trasa. Analogicznie jak w poprzedniej sekcji poruszanie kontrolowane jest przez strzałki, aczkolwiek tutaj nie należy ich przytrzymywać a jedynie krótko kliknąć. Po kliknięciu zostanie pokonany pewien dystans po którym robot się zatrzyma. Dystans do przejechania (krok) ustawiany jest za pomocą suwaka \emph{drive step} a wartość przez niego reprezentowana jest podana w centymetrach. Aby ustawić krok obrotu należy skorzystać z suwaka \emph{rotate step}. Przycisk \emph{ROTATE TO} służy do obracania robota na wyznaczony azymut, którego wartość wcześniej należy ustawić suwakiem znajdującym się obok niego. (Uwaga! Pojęcie azymutu w tym dokumencie oznacza kąt skierowania robota liczony od azymtu geograficznego 90°, przeciwnie do ruchu wskazówek zegara, czyli tak jak matematycznie reprezentowany jest kąt).
 \\
 
 Sekcja \emph{CONSOLE} pozwala na ręczne sterowanie robotem za pośrednictwem komend. Tutaj należy zaznaczyć że wszysktie funkcje sterujące oferowane przez program korzystają z tych komend odpowiednio je formułując i wysyłając do jednostki mobilnej. Pole tekstowe podpisane \emph{command line} służy do wprowadzania komendy, która jest wysyłana po kliknięciu przycisku \emph{SEND}.
@@ -50,11 +52,30 @@ Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zad
     \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtru Kalmana\cite{Kedzierski2016} zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
 \end{itemize}
 
-Zakładka \emph{map} zawiera wykres który służy do wyświetlania zmierzonych punktów na układzie współrzędnych
+Zakładka \emph{map} (Rys. \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu.
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/main-app-view-map.PNG}
+	\caption{Zakładka \emph{map}}
+	\label{fig:main-app-map-section}
+\end{figure}
 
-Zakładka \emph{raw output} zawiera pełnowymiarowy podgląd na historię wysyłanych i odbieranych danych. Jest większą wersją okienka \emph{output} sekcji \emph{CONSOLE}
+Zakładka \emph{raw output} (Rys. \ref{fig:main-app-raw-output-section}) zawiera pełnowymiarowy podgląd na historię wysyłanych i odbieranych danych. Jest większą wersją okienka \emph{output} sekcji \emph{CONSOLE}.
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/main-app-view-raw-output.PNG}
+	\caption{Zakładka \emph{raw output}}
+	\label{fig:main-app-raw-output-section}
+\end{figure}
 
-Zakładka \emph{magnetometer calibration} zawiera zestaw elementów wykorzystywanych do kalibracji magnetometru. Więcej o tej zakładce jak i o przebiegu kalibracji w podrozdziale \ref{sec:mag_cal}.
+Zakładka \emph{magnetometer calibration} (Rys. \ref{fig:main-app-mag-section}) zawiera zestaw elementów wykorzystywanych do kalibracji magnetometru. Informacje o stosowanych metodach i przebiegu kalibracji znajdują się w rozdziale \ref{sec:odometry}.
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/main-app-view-magnetom.PNG}
+	\caption{Zakładka \emph{magnetometer calibration}}
+	\label{fig:main-app-mag-section}
+\end{figure}
+
 
 \subsubsection{Program RViz}
 \begin{figure}[ht]
@@ -260,6 +281,8 @@ Gąsienica widoczna na Rys. \ref{fig:tracks} będzie wydrukowana w innym materia
 
 \section{Schemat elektroniczny}
 >TODO napisac czemu bluetooth, czemu laser i czemu wszystkie inne elementy zostały wybrane
+>TODO dac cite do linkow produktow, omowic kazdy wykorzystany
+>TODO moze zrob dokladniejszy schemat
 
 \begin{figure}[ht]
 	\centering
