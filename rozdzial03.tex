@@ -239,30 +239,65 @@ Aby dokonać kalibracji, robot powinien być połączony z aplikacją sterując�
     \item Na koniec, aby wysłać dane kalibracyjne do robota, należy kliknąć przycisk \emph{SEND CALCULATED CALIBRATION DATA}. 
 \end{enumerate}
 
-Po dokonaniu procedury kalibracji pomiary dużo lepiej oddają rzeczywisty kierunek i zwrot platformy, jednak nawet podczas postoju platformy zwracana wartość azymutu nie pozostaje stała. Aby zniwelować to zjawisko konieczne jest zastosowanie filtru. W tego typu sensorach powszechnie wykorzystywany jest filtr Kalmana.
+Po dokonaniu procedury kalibracji pomiary dużo lepiej oddają rzeczywisty kierunek i zwrot platformy, jednak nawet podczas postoju platformy zwracana wartość azymutu nie pozostaje stała. Aby zniwelować to zjawisko konieczne jest zastosowanie filtru.
 
 \subsubsection{Filtr Kalmana}
+W układach sensorycznych robotów powszechnie wykorzytywany jest filtr Kalmana\cite{Kedzierski2016}. W tej sekcji wyjaśniona będzie zastosowana w projekcie, uproszczona implementacja takiego filtru.
 
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Implementacja filtru Kalmana w języku Python,label=lst:kalman]
+def get_azimuth_kalman(self):
+    q = 0.1
+    estimate_err = 3
+    measure_err = 3
+    last_est = int(self.send("GET_AZIMUTH#"))
 
+    for _ in range(20):
+        measurement = int(self.send("GET_AZIMUTH#"))
+        kalman_gain = estimate_err/(estimate_err + measure_err)
+        current_est = last_est + kalman_gain*(measurement - last_est)
+        estimate_err = (1 - kalman_gain)*estimate_err + abs(last_est-current_est)*q
+        last_est = current_est
+        ... (pominięto)
+        
+    current_est = int(current_est)
+    self.azimuth = current_est
+    self.publish_ros_odometry()
+    return self.azimuth
+\end{lstlisting}
 
+Ze względu na ograniczone zasoby mikrokontrolera, filtracja odbywa się po stronie aplikacji sterującej. Pomiar dokonywany jest podczas gdy platforma stoi nieruchomo, stąd wiadomo że estymowana wartość jest stała. Na początku potrzebne będzie kilka odgórnie ustalonych parametrów. Wartości \emph{estimate\_err} i \emph{measure\_err} odpowiadają kolejno wariancji estymatora i wariancji mierzonej wartości (normalnie wyznaczone na podstawie dokładności pomiaru przyrządu), jednak nie muszą one być ustalone na podstawie rzeczywistych parametrów urządzenia. Ich wartości będą wpływać na działanie filtru - to czy dane będą bardziej "wygładzane", czy bardziej zależne od ostatniego pomiaru. W tym wypadku zostały wyznaczone eksperymentalnie. Parametr \emph{q} nie był konieczny, służy on regulacji zwiększenia wariancji estymaty w przypadku gdy estymowana wartość jest zmienna w czasie. Został on również dobrany eksperymentalnie. Chociaż ma mały wpływ na pomiary statyczne - jest zaimplementowany na potrzeby przyszłego rozwoju projektu.
 
+Kolejną rzeczą która jest potrzebna jest aktualna wartość ostatniej estymacji \emph{last\_estimate}. Przy odpowiednio długim pomiarze tę wartość można ustawić na dowolną, jednak aby wartość estymatora szybciej zbiegała do estymowanej wstępnie zostaje ustawiona na zmierzoną wartość.
+
+Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega on w 20 iteracjach. W każdej z iteracji zachodzą dwie fazy - predykcji i korekcji.
+\\
+
+Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)^-$ i odchylenia standardowego apriori $\sigma^2(t+1)^-$ dla czasu $t+1$ na podstawie analogicznych wartości aposteriori dla czasu $t$, tj.  $\hat{x}(t)^+$ i $\sigma^2(t)^+$. W tym wypadku z założenia wartość mierzona jest stała, dlatego przyjmuje się że:
+\begin{center}
+    $\hat{x}(t+1)^- = \hat{x}(t)^+$ \\
+    $\sigma^2(t+1)^- = \sigma^2(t)^+$.    
+\end{center}
+Kod programu korzysta ze zmiennych \emph{est\_error} i \emph{current\_est}. Wartości apriori i aposteriori nie muszą być trzymane jednocześnie w pamięci - wystarczy nadpisywać stare zmienne. Tutaj oznaczałoby to sformułowanie konstrukcji \emph{est\_error}=\emph{est\_error} i \emph{current\_est}=\emph{current\_est} co nie jest potrzebne i dlatego zostało pominięte.
+\\
+
+Faza korekcji odbywa się w pętli. Najpierw dokonywany jest pomiar z sensora (\emph{measurement}). Następnie obliczane jest wzmocnienie Kalmana (\emph{kalman\_gain}), czyli parametr wpływający na to jakie znaczenie nowy pomiar ma dla wartości estymatora oraz jego wariancji. Później, z jego wykorzystaniem obliczana jest nowa wartość estymatora (\emph{current\_est}). W kolejnej linijce aktualizowana jest wartość jego wariancji (\emph{estimate\_err}). Aktualnie wraz z każdym nowym przejściem pętli zbiega ona do niezerowej wartości, zależnej od parametru q. Gdyby ten parametr nie zaistniał, z każdą iteracją jej wartość zbiegałaby do zera. Na koniec wartość (\emph{current\_est}) kopiowana jest do (\emph{last\_est}). Dzieje się to, ponieważ aktualizacja (\emph{estimate\_err}) potrzebuje przy obliczeniach wartości aktualnej oraz poprzedniej estymatora.
+
+Po dwudziestokrotnym przejściu, wartość oczekiwana estymatora konwertowana jest na liczbę całkowitą, i zapisywanam, dane o azymucie są publikowane na odpowiednim temacie i wartość jest zwracana przez funkcję.
 
 
 \subsection{Skan otoczenia i budowa mapy}
 \label{sec:scan}
 %>TODO powiedz o tym jak sie skaszaniło przy przewodzie pod podłogą<<<<<<<<<<<<<< koniecznie tutaj
-
-Samo zebranie pomiarów i przedstawienie ich w formie czytelnej dla człowieka nie jest trudne w realizacji. Pozyskane dane można przedstawić na wykresie, punkty połączyć prostymi liniami. Problem zaczyna się z agregacją wielu pomiarów, i na tym będzie koncentrował się ten rozdział.
-
-Mając do dyspozycji sensory
-
-
 %>TODO tu napisac o bazowym mapowaniu pkt na plaszczyzne
 %o swojej implementacji ze scorem
 %nastepnie o tym co moznaby dalej (translacja korekta)
 %ale nie zostalo zrobione bo bylo slabe i to wymaga filtrow czasteczek
 %i ze jest cos takiego jak cartographer od googla
 %ale zdecydowano ze gmapper jest spoko i czemu nie gmapper
+
+Samo zebranie pomiarów i przedstawienie ich w formie czytelnej dla człowieka nie jest trudne w realizacji. Pozyskane dane można przedstawić na wykresie, punkty połączyć prostymi liniami. Problem zaczyna się z agregacją wielu pomiarów, i na tym będzie koncentrował się ten rozdział.
+
+Mając do dyspozycji sensory
 
 
 %%przewod - interferencja
