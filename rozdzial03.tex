@@ -123,8 +123,6 @@ Stosunek kąta obrotu do liczby impulsów ($0.164$) został wyznaczony eksperyme
 Taka implementacja została zachowana do końca projektu. Polecenie \emph{ROTATE\_TO} dalej korzysta ze starego sposobu z użyciem magnetometru, jednak nie jest ono wykorzystywane podczas pomiarów.
 
 \subsubsection{Kalibracja magnetometru}
-%>TODOwspomnij o potrzebie zastosowania filtru (np kalmana)
-
 Wykorzystywany w projekcie moduł magnetometru jest urządzeniem czułym i bardzo podatnym na zakłócenia - szczególnie jeśli mierzone jest pole magnetyczne ziemi. Poza zakłóceniami z otoczenia, występują również te wynikające z samej budowy robota - wszelkie przewody przez które płynie prąd generują swoje własne pola, nawet same metalowe elementy interferują z pomiarem. >TODO przypis o zakloceniach i ich zrodlach Na te zakłócenia należy zwrócić uwagę i podjąć kroki mające na celu ich kompensację. Warto też wspomnieć, że w tej pracy jednostki uzyskane z pomiaru nie mają znaczenia - jedyne co jest potrzebne w celu uzyskania informacji o kierunku w którym robot jest zwrócony to kierunek i zwrot zmierzonego wektora wartości natężenia pola.
 
 Pierwszym problemem są zakłócenia typu \emph{hard iron}. Ich obecność przejawia się w postaci stałego przesunięcia mierzonych we wszystkich trzech osiach wartości natężenia pola magnetycznego. Zmierzone wartości można przedstawić na trójwymiarowym wykresie (jak uczyniono w pierwszych wersjach aplikacji sterującej). Każda z osi wykresu odpowiada osi pomiaru natężenia pola magnetycznego. W idealnej sytuacji zbór punktów powinien być osadzony na sferze o środku w punkcie $(0,0,0)$. Tak się jednak nie dzieje, co jest widoczne na Rys. \ref{fig:3d-mag-no-cal}.
@@ -297,31 +295,31 @@ Po dwudziestokrotnym przejściu, wartość oczekiwana estymatora konwertowana je
 
 Samo zebranie pomiarów i przedstawienie ich w formie czytelnej dla człowieka nie jest trudne w realizacji. Pozyskane dane można przedstawić na wykresie, punkty połączyć prostymi liniami. Problem zaczyna się z agregacją wielu pomiarów, i na tym będzie koncentrował się ten rozdział.
 
-Mając do dyspozycji sensory
+Mając do dyspozycji dane z sensora \emph{LIDAR} oraz enkoderów i magnetometru, można rozpocząć proces skanowania. Pierwsze podejście oparte było o skan manualny, bez zliczania ścieżki - jedynie obrót był uwzględniony a dane ze skanera obracane o zczytany z sensora azymut. Robot został ustawiony w początkowej pozycji, uruchomiono procedurę skanowania za pomocą funkcji \emph{SCAN}, następnie z racji że skan zachodzi w zakresie kątów $\langle0^{\circ},180^{\circ}\rangle$, obrócony o $180^{\circ}$ (funkcja \emph{ROTATE}) po czym ponownie wykonano skanowanie. Efekt przedstawia Rys.\ref{fig:first-scan}. Jak widać, ściany pokoju (górna i dolna część rysunku) nie są równoległe. W tym momencie okazało się, że konieczna będzie kalibracja magnetometru, omówiona w rozdziale \ref{sec:odometry}. Po dokonaniu procedury kalibracji czynności powtórzono, rezultat ukazano na Rys. \ref{fig:first-magnetom-calibrated-scan}. Na dalej przedstawianych rysunkach skany mogą wyglądać nieco inaczej, głównie przez zamknięte lub otwarte drzwi pokoju - widoczne jest to na ostatnich dwóch wspomnianych rysunkach jako najdłuższe z promieni - w tym wypadku drzwi były otwarte a pomiar uwzględniał fragment przedpokoju autora. Skany przedstawiane są w zakładce \emph{map} okna głównego aplikacji sterującej.
 
-
-%%przewod - interferencja
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/calibrated-mag-high-interference-broken-rotation.PNG}
-	\caption{>TODO}
-	\label{fig:xxx}
+		\includegraphics[width=0.5\linewidth]{rys/ScanBot-01-room-map-nocalibration.png}
+	\caption{Pierwszy skan pokoju}
+	\label{fig:first-scan}
 \end{figure}
 
-%% znowu przewod
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/2020-11-04-170347_1920x1080_scrot.PNG}
-	\caption{>TODO}
-	\label{fig:xxx}
+		\includegraphics[width=0.5\linewidth]{rys/ScanBot-02-room-map-calibrated.png}
+	\caption{Skan pokoju po zastosowaniu kalibracji magnetometru}
+	\label{fig:first-magnetom-calibrated-scan}
 \end{figure}
+
+%>TODO pisz o dopasowaniu
+
 
 
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.5\linewidth]{rys/ScanBot-12-calibrated-room-map1.PNG}
 	\caption{>TODO}
-	\label{fig:xxx}
+	\label{fig:}
 \end{figure}
 
 \begin{figure}[ht]
@@ -346,6 +344,39 @@ Mając do dyspozycji sensory
 \end{figure}
 
 
+%>TODO teraz o pierwotnym dopasowaniu ze scorem
+%>TODO zdjecia do tg
+
+
+%>TODO teraz zmiana na RViz
+
+%>TODO napisz o interferencji
+
+%%przewod - interferencja
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/calibrated-mag-high-interference-broken-rotation.PNG}
+	\caption{>TODO}
+	\label{fig:xxx}
+\end{figure}
+
+%% znowu przewod
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/2020-11-04-170347_1920x1080_scrot.PNG}
+	\caption{>TODO}
+	\label{fig:xxx}
+\end{figure}
+
+
+%>TODO odometria jest słaba, nie pozwala na skan całego domu. Na ten moment obszar ograniczony został do pojedynczego pokoju.
+
+%TODO skany z wykorzystaniem algorytmu jazdy autonomicznej (mozna ew. dorobić ścieżkę)
+
+
+
+
+
 \subsubsection{UMBenchmark\cite{Borenstein1995}}
 %>TODO tu dac fotki koniecznie
 %jakies rysunki nabazgrane z kwadratami
@@ -359,7 +390,6 @@ Mając do dyspozycji sensory
 % powiedz co po kolei jak sie zmieniało
 % z czym były problemy
 % o tutaj mala podpowiedz:
-
 % sensor dzwieku jest do kitu za duza fluktuacja pluz ogromny kąt plus za duzy blad pomiaru plus za dlugi pomiar
 % sharp mniejszy kąt mniejsza fluktuacja krotki pomiar ale podatnosc na swiatlo
 % lidar super miodzio
