@@ -1,7 +1,7 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
+\label{sec:pc-software}
 \subsection{Struktura oprogramowania}
-%>TODO czas przyszły, nie mów o ROSie i RViz jeszcze, to przyjdzie potem>wywal rviz i ros stad
 %>TODO opisz procedurę połączenia oraz jego schemat
 %>TODO daj link do repo https://github.com/Tomaszu97/ScanBot/
 
@@ -53,7 +53,7 @@ Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zad
     \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtru Kalmana\cite{Kedzierski2016} zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
 \end{itemize}
 
-Zakładka \emph{map} (rysunek \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu.
+Zakładka \emph{map} (rysunek \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu. W ostatecznej wersji, zamiast rysowania mapy w tej zakładce, wyświetlana jest ona w programie RViz opisanym w dalszej części dokumentu. Wykres wyskalowany jest w centymetrach.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.8\linewidth]{rys/main-app-view-map.PNG}
@@ -87,7 +87,7 @@ Zakładka \emph{magnetometer calibration} (rysunek \ref{fig:main-app-mag-section
 \end{figure}
 
 Z okna głównego programu RViz należy zwrócić uwagę jedynie na podgląd układu współrzędnych po prawej stronie okna. Wszystkie parametry są ustawiane automatycznie wraz ze startem aplikacji, nie ma potrzeby żadnej ręcznej konfiguracji. Więcej informacji o tym programie dostępne jest na stronie internetowej \cite{rviz}.
-Podczas pracy programu aktualna pozycja robota jest reprezentowana jako obiekt z etykietą \emph{base\_link} - podczas jazdy jego pozycja jest aktualizowana względem etykiety \emph{odom}. Na początku wszystkie układy współrzędnych są w pozycji zerowej i się nakładają.
+Podczas pracy programu aktualna pozycja robota jest reprezentowana jako obiekt z etykietą \emph{base\_link} - podczas jazdy jego pozycja jest aktualizowana względem etykiety \emph{odom}. Na początku wszystkie układy współrzędnych są w pozycji zerowej. Wykres posiada siatkę wyskalowaną w metrach.
 
 \subsubsection{Środowisko sterujące}
 \label{sec:ros-env}
@@ -156,6 +156,7 @@ Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, d
 Klasa \emph{SerialConnection} służy do obsługi komunikacji interfejsu szeregowego konwertera USB-UART. Zawiera funkcje służące do nawiązywania połączenia, wysyłania komend i odbierania odpowiedzi od robota. Ponadto posiada uchwyt do klasy głównej, dzięki czemu wymieniane dane prezentuje zarówno w polu tekstowym w sekcji okna \emph{CONSOLE} jak i w zakładce \emph{raw output}.
 
 \subsection{Jazda autonomiczna}
+\label{sec:autonomous-drive}
 W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
 \begin{itemize}
     \item \emph{FRONT ZONE} (strefa F)
@@ -241,21 +242,21 @@ Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki pr
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/view1.png}
+		\includegraphics[width=0.6\linewidth]{rys/view1.png}
 	\caption{Rzut główny platformy}
 	\label{fig:view1}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/view2.png}
+		\includegraphics[width=0.6\linewidth]{rys/view2.png}
 	\caption{Rzut platformy z prawej strony}
 	\label{fig:view2}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/view3.png}
+		\includegraphics[width=0.6\linewidth]{rys/view3.png}
 	\caption{Rzut platformy z góry}
 	\label{fig:view3}
 \end{figure}
@@ -264,7 +265,7 @@ Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} zosta
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/arm.png}
+		\includegraphics[width=0.6\linewidth]{rys/arm.png}
 	\caption{Rzut izometryczny wieżyczki}
 	\label{fig:tower}
 \end{figure}
@@ -273,7 +274,7 @@ Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym mate
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/tracks-final.png}
+		\includegraphics[width=0.6\linewidth]{rys/tracks-final.png}
 	\caption{Rzut izometryczny gąsienicy}
 	\label{fig:tracks}
 \end{figure}

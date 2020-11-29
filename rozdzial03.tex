@@ -1,13 +1,13 @@
 \chapter{Ewaluacja}
 
-\subsection{Odometria}
+\section{Odometria}
 \label{sec:odometry}
-Robot korzysta z nawigacji zliczeniowej w celu połączenia pomiarów odległości zebranych z otoczenia i aproksymacji ich położenia na płaszczyźnie względem jednego ustalonego punktu. Zliczaniu podlegają dwie wartości - dystans przejechany wzdłuż oraz obrót pojazdu w miejscu. Szereg zmierzonych w ten sposób wartości umożliwia odtworzenie przejechanej ścieżki. Rysunek \ref{fig:odom-axis-simplified} przedstawia rzeczywisty oraz uproszczony model podwozia robota. Zamiast uwzględniać obie poziome osi i 4 koła, upraszcza się go do formy robota o jednej osi, z jedną parą kół. Gdy oba koła poruszają się w tę samą stronę, robot przesuwa się w przód lub w tył. Gdy pracują przeciwbieżnie - obraca się wokół punktu oznaczonego znakiem X.
+Robot korzysta z nawigacji zliczeniowej w celu połączenia pomiarów odległości zebranych z otoczenia i aproksymacji ich położenia na płaszczyźnie względem jednego ustalonego punktu. Zliczaniu podlegają dwie wartości - dystans przejechany wzdłuż oraz obrót pojazdu w miejscu. Szereg zmierzonych w ten sposób wartości umożliwia odtworzenie przejechanej ścieżki. Rysunek \ref{fig:odom-axis-simplified} przedstawia rzeczywisty oraz uproszczony model podwozia robota. X na rysunku oznacza środek robota - pionową oś wokół której się obraca. Zamiast uwzględniać obie poziome osi i 4 koła, upraszcza się go do formy robota o jednej osi, z jedną parą kół. Gdy oba koła poruszają się w tę samą stronę, robot przesuwa się w przód lub w tył. Gdy pracują przeciwbieżnie - obraca się wokół osi oznaczonej X.  
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.6\linewidth]{rys/robot-odometry-simplified.pdf}
-	\caption{Model rzeczywisty i uproszczony (X oznacza środek robota - pionową oś wokół której się obraca)}
+		\includegraphics[width=0.8\linewidth]{rys/robot-odometry-simplified.png}
+	\caption{Model rzeczywisty i uproszczony }
 	\label{fig:odom-axis-simplified}
 \end{figure}
 
@@ -16,7 +16,7 @@ Pierwszym pomysłem było wykorzystanie enkoderów do pomiaru translacji pojazdu
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/encoder-position.png}
+		\includegraphics[width=0.6\linewidth]{rys/encoder-position.png}
 	\caption{Umiejscowienie enkodera z prawej strony robota}
 	\label{fig:encoder-pos}
 \end{figure}
@@ -24,17 +24,17 @@ Pierwszym pomysłem było wykorzystanie enkoderów do pomiaru translacji pojazdu
 Enkodery zostały zamontowane w miejscu przedstawionym na rysunek \ref{fig:encoder-pos}, symetrycznie po obu stronach podwozia. Napęd podany od serwa przez zębatkę przenosi napęd zarówno na tylne koło jak i enkoder, z przekładniami 1:1 w obu przypadkach. Dzięki takiemu rozwiązaniu pełny obrót enkodera odpowiada pełnemu obrotowi koła. Enkoder obrotowy EC-11 generuje 20 impulsów przy kącie obrotu 360°. Aby można było wyznaczyć pokonaną odległość, w pierwszej kolejnosci należy obliczyć stosunek ilości impulsów do przejechanego dystansu - w tym celu autor stworzył prosty wzór:
 
 \begin{center}
-    $DPR = \frac{2 \pi r}{p}$ \\
-    \emph{DPR - współczynnik (ang. Distance to Pulse Ratio) wyrażany w cm/impuls} \\
-    \emph{r - promień koła pojazdu} \\
+    $DPR = \frac{2 \pi r}{p}$ \\[5pt]
+    \emph{DPR - współczynnik (ang. Distance to Pulse Ratio) wyrażany w cm/impuls} \\[5pt]
+    \emph{r - promień koła pojazdu} \\[5pt]
     \emph{p - liczba impulsów enkodera na obrót koła}
 \end{center}
 
 Wiedząc ile impulsów generuje enkoder, oraz znając wymiary koła w łatwy sposób można obliczyć DPR. Podstawiając dane to jest:
 
 \begin{center}
-    $DPR = \frac{2 \pi 2,5cm}{20imp}$ \\
-    $DPR = 0.785 \frac{cm}{imp}$ \\
+    $DPR = \frac{2 \pi 2,5cm}{20imp}$ \\[5pt]
+    $DPR = 0.785 \frac{cm}{imp}$ \\[5pt]
     $\frac{1}{DPR} = 1.274$
 \end{center}
 
@@ -122,8 +122,9 @@ Stosunek kąta obrotu do liczby impulsów ($0.164$) został wyznaczony eksperyme
 
 Taka implementacja została zachowana do końca projektu. Polecenie \emph{ROTATE\_TO} dalej korzysta ze starego sposobu z użyciem magnetometru, jednak nie jest ono wykorzystywane podczas pomiarów.
 
-\subsubsection{Kalibracja magnetometru}
-Wykorzystywany w projekcie moduł magnetometru jest urządzeniem czułym i bardzo podatnym na zakłócenia - szczególnie jeśli mierzone jest pole magnetyczne ziemi. Poza zakłóceniami z otoczenia, występują również te wynikające z samej budowy robota - wszelkie przewody przez które płynie prąd generują swoje własne pola, nawet same metalowe elementy interferują z pomiarem. >TODO przypis o zakloceniach i ich zrodlach Na te zakłócenia należy zwrócić uwagę i podjąć kroki mające na celu ich kompensację. Warto też wspomnieć, że w tej pracy jednostki uzyskane z pomiaru nie mają znaczenia - jedyne co jest potrzebne w celu uzyskania informacji o kierunku w którym robot jest zwrócony to kierunek i zwrot zmierzonego wektora wartości natężenia pola.
+\subsection{Kalibracja magnetometru}
+%>TODO przypis o zakloceniach i ich zrodlach
+Wykorzystywany w projekcie moduł magnetometru jest urządzeniem czułym i bardzo podatnym na zakłócenia - szczególnie jeśli mierzone jest pole magnetyczne ziemi. Poza zakłóceniami z otoczenia, występują również te wynikające z samej budowy robota - wszelkie przewody przez które płynie prąd generują swoje własne pola, nawet same metalowe elementy interferują z pomiarem. Na te zakłócenia należy zwrócić uwagę i podjąć kroki mające na celu ich kompensację. Warto też wspomnieć, że w tej pracy jednostki uzyskane z pomiaru nie mają znaczenia - jedyne co jest potrzebne w celu uzyskania informacji o kierunku w którym robot jest zwrócony to kierunek i zwrot zmierzonego wektora wartości natężenia pola.
 
 Pierwszym problemem są zakłócenia typu \emph{hard iron}. Ich obecność przejawia się w postaci stałego przesunięcia mierzonych we wszystkich trzech osiach wartości natężenia pola magnetycznego. Zmierzone wartości można przedstawić na trójwymiarowym wykresie (jak uczyniono w pierwszych wersjach aplikacji sterującej). Każda z osi wykresu odpowiada osi pomiaru natężenia pola magnetycznego. W idealnej sytuacji zbór punktów powinien być osadzony na sferze o środku w punkcie $(0,0,0)$. Tak się jednak nie dzieje, co jest widoczne na rysunku \ref{fig:3d-mag-no-cal}.
 
@@ -162,7 +163,7 @@ Niestety, kształt chmury punktów wciąż daleki jest od idealnej sfery. Efekte
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-08-2d-calibration-theta-sigma.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-08-2d-calibration-theta-sigma.PNG}
 	\caption{Rozkalibrowany magnetometr na dwuwymiarowej płaszczyźnie}
 	\label{fig:2d-mag-no-cal}
 \end{figure}
@@ -171,7 +172,7 @@ Tak jak w przypadku trzech wymiarów, w pierwszej kolejności dokonywana jest ko
 
 \begin{figure}[H]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-10-2d-calibration-theta-sigma-2-added-hard-offset-reset-data-so-soft-iron-values-are-proper.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-10-2d-calibration-theta-sigma-2-added-hard-offset-reset-data-so-soft-iron-values-are-proper.PNG}
 	\caption{Korekcja hard iron}
 	\label{fig:2d-mag-hard-corr-xy}
 \end{figure}
@@ -211,7 +212,7 @@ Ostatecznie chmura punktów tworzy okrąg co przedstawiono na rysunku \ref{fig:2
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-11-2d-set-theta-then-sigma-and-done.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-11-2d-set-theta-then-sigma-and-done.PNG}
 	\caption{Chmura punktów po dokonaniu korekcji obu typów zniekształceń}
 	\label{fig:2d-mag-soft-corr-applied}
 \end{figure}
@@ -239,7 +240,7 @@ Aby dokonać kalibracji, robot powinien być połączony z aplikacją sterując�
 
 Po dokonaniu procedury kalibracji pomiary dużo lepiej oddają rzeczywisty kierunek i zwrot platformy, jednak nawet podczas postoju platformy zwracana wartość azymutu nie pozostaje stała. Aby zniwelować to zjawisko konieczne jest zastosowanie filtru.
 
-\subsubsection{Filtr Kalmana}
+\subsection{Filtr Kalmana}
 W układach sensorycznych robotów powszechnie wykorzytywany jest filtr Kalmana\cite{Kedzierski2016}. W tej sekcji wyjaśniona będzie zastosowana w projekcie, uproszczona implementacja takiego filtru.
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Implementacja filtru Kalmana w języku Python,label=lst:kalman]
@@ -272,7 +273,7 @@ Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega
 
 Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)^-$ i odchylenia standardowego apriori $\sigma^2(t+1)^-$ dla czasu $t+1$ na podstawie analogicznych wartości aposteriori dla czasu $t$, tj.  $\hat{x}(t)^+$ i $\sigma^2(t)^+$. W tym wypadku z założenia wartość mierzona jest stała, dlatego przyjmuje się że:
 \begin{center}
-    $\hat{x}(t+1)^- = \hat{x}(t)^+$ \\
+    $\hat{x}(t+1)^- = \hat{x}(t)^+$ \\[5pt]
     $\sigma^2(t+1)^- = \sigma^2(t)^+$.    
 \end{center}
 Kod programu korzysta ze zmiennych \emph{est\_error} i \emph{current\_est}. Wartości apriori i aposteriori nie muszą być trzymane jednocześnie w pamięci - wystarczy nadpisywać stare zmienne. Tutaj oznaczałoby to sformułowanie konstrukcji \emph{est\_error}=\emph{est\_error} i \emph{current\_est}=\emph{current\_est} co nie jest potrzebne i dlatego zostało pominięte.
@@ -282,31 +283,108 @@ Faza korekcji odbywa się w pętli. Najpierw dokonywany jest pomiar z sensora (\
 
 Po dwudziestokrotnym przejściu, wartość oczekiwana estymatora konwertowana jest na liczbę całkowitą, i zapisywanam, dane o azymucie są publikowane na odpowiednim temacie i wartość jest zwracana przez funkcję.
 
+\subsection{Poprawa jakości odometrii}
+Ze względu na brak możliwości skonstruowania idealnego obiektu rzeczywisty ruch platformy nie pokrywa się z zamierzonym. Oś obrotu kół nigdy nie osiągnie wymiarów idealnie równych z projektem, podobnie same koła będą miały inne i różne od siebie średnice (oczywiście, z pewnym przybliżeniem mówi się że są one ``równe``). Dodatkowo na nieidealny tor ruchu wpływa chropowatość powierzchni, drgania styków enkoderów i wiele innych czynników. Istnieje metoda która pozwala skorygować część z wymienionych czynników.
+\\
 
-\subsection{Skan otoczenia i budowa mapy}
+Wykorzystana zostanie metoda korekcji opisana w pracy \emph{Correction of Systematic Odometry Errors in Mobile Robots}\cite{Borenstein1995}. Korzysta ona z metody wyznaczania błędu przejazdu trasy zwanej \emph{UMBmark} (od ang. \emph{University of Michigan Benchmark}). Polega ona na zbadaniu przesunięcia pozycji końcowej robota względem pozycji początkowej po pokonaniu wyznaczonej, kwadratowej ścieżki. Na rysunku \ref{fig:umbenchmark-path} przedstawiono przykładowy przejazd w kierunku przeciwnym do ruchu wskazówek zegara.
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/umbenchmark-path.pdf}
+	\caption{Trasa przejazdu robota według \emph{UMBmark}}
+	\label{fig:umbenchmark-path}
+\end{figure}
+
+Metoda \emph{UMBmark} polega na pięciokrotnym pomiarze błędów $\in{x}$ oraz $\in{y}$ po przejazdach zgodnie i przeciwnie do ruchu wskazówek zegara. Różne kierunki przejazdu pomogą zniwelować wpływ błędów niesystematycznych na tor jazdy platformy. Rozmiar kwadratowej ścieżki według dokumentu powinien wynosić $4\times4$ metry ($L=4m$), jednak ze względu na ograniczoną przestrzeń autor zmniejszył obszar do rozmiaru $1,5\times1,5$ metra. Zdjęcia środowiska testowego przedstawiono na rys. \ref{fig:umbenchmark-photo-path} i  \ref{fig:umbenchmark-photo-finish}. Do pomiarów użyto taśmy mierniczej zwijanej o dokładności ±1 mm jednak ze względów praktycznych w pomiarach uwzględniono wartości zaokrąglone do pełnych centymetrów. Wyniki przedstawiono w tabeli \ref{tab:umbmark}.
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.6\linewidth]{rys/UMBenchmark-1.jpg}
+	\caption{Wyznaczona ścieżka przejazdu robota}
+    \label{fig:umbenchmark-photo-path}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.6\linewidth]{rys/UMBenchmark-2.jpg}
+	\caption{Punkt startowy i przesunięcie}
+    \label{fig:umbenchmark-photo-finish}
+\end{figure}
+
+
+\begin{table}[H]
+    \caption{Wyniki pomiarów \emph{UMBmark}}
+     \label{tab:umbmark}
+    \centering
+    \begin{tabular}{ |p{0.05\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}|p{0.15\linewidth}| } \hline
+    N. p. & \multicolumn{2}{p{0.15\linewidth}|}{Kierunek: $\circlearrowleft$} & \multicolumn{2}{p{0.15\linewidth}|}{Kierunek: $\circlearrowright$} \\ \hline
+    - & $\in{x}$ & $\in{y}$ & $\in{x}$ & $\in{y}$ \\ \hline \hline
+    1 & -28 & 5 & 62 & 28 \\ \hline
+    2 & -33 & 15 & 54 & 32 \\ \hline
+    3 & -2 & 4 & -45 & 9 \\ \hline
+    4 & -5 & -21 & -55 & -19 \\ \hline
+    5 & 13 & -12 & -31 & 27 \\ \hline
+\end{tabular}
+\end{table}
+
+Mając do dyspozycji wartości potrzebnych pomiarów można przystąpić do obliczeń. Najpierw dla każdego kierunku należy wyznaczyć środek ciężkości, czyli uśrednić wartości współrzędnych $x$ i $y$, gdzie przykładowo dolny indeks $x_{cgcw}$ oznacza wartość współrzędnej $x$ środka ciężkości dla przejazdów zgodnych z ruchem wskazówek zegara (ang. \emph{cg - center of gravity}, \emph{cw - clockwise}). Analogicznie dla kierunku przeciwnego to będzie $x_{csccw}$. I tak:
+
+\begin{center}
+    $
+    x_{cgccw} = \frac{1}{n}\sum_{i=1}^{n} (\in{x_{i,ccw}}) = \frac{-28-33-2-5+13}{5} = -11 \\[5pt]
+    y_{cgccw} = \frac{1}{n}\sum_{i=1}^{n} (\in{y_{i,ccw}}) = \frac{5+15+4-21-12}{5} = -1,8 \\[5pt]
+    x_{cgcw} = \frac{1}{n}\sum_{i=1}^{n} (\in{x_{i,cw}}) = \frac{62+54-45-55-31}{5} = -3 \\[5pt]
+    y_{cgcw} = \frac{1}{n}\sum_{i=1}^{n} (\in{y_{i,cw}}) = \frac{28+32+9-19+27}{5} = 15,4
+    $
+\end{center}
+
+W kolejnym kroku zostaną obliczone współczynniki $\alpha$ oraz $\beta$:
+
+\begin{center}
+    $
+    \alpha = \frac{x_cgcw + x_cgccw}{-4L} = \frac{-3 - 11}{-4 \times 1,5} = 2,33^{\circ} \\[5pt] 
+    \beta = \frac{x_cgcw - x_cgccw}{-4L} = \frac{-3 + 11}{-4 \times 1,5} = -1,33^{\circ}
+    $
+\end{center}
+
+Z pomocą współczynników $\alpha$ i $\beta$ obliczane są błędy wylistowane poniżej. Tu należy zaznaczyć, że korekta dotyczy parametrów długości osi $b$ i średnicy kół $D$ schematu zastępczego robota przedstawionego wcześniej w niniejszym dokumencie na rysunku \ref{fig:odom-axis-simplified}.
+
+\begin{itemize}
+    \item Błąd $E_{d}$ będący stosunkiem średnicy koła prawego do koła lewego
+    \item Błąd $E_{b}$ będący stosunkiem rzeczywistej długości osi do długości nominalnej
+\end{itemize}
+
+Obliczanie współczynników $E_{d}$ i $E_{b}$:
+
+\begin{center}
+    $
+    R = \frac{L : 2}{sin(\beta : 2)} = \frac{1,5 : 2}{sin(-1,33 : 2)} = -0,01 \\[5pt]
+    E_{d} = \frac{R + (b : 2)}{R - (b : 2)} = \frac{-0,01 + (b : 2)}{-0,01 - (b : 2)} \\[5pt]%%%%>TODOOOO
+    E_{b} = \frac{90^{\circ}}{90^{\circ} - \alpha} = \frac{90^{\circ}}{90^{\circ} - 2,33^{\circ}} = 1,03
+    $
+\end{center}
+
+
+%>TODO robot jezdzi dobrze nie ma potrzeby korekcji 
+% wiec robot juz jezdzi wystarczajaco dobrze
+
+\section{Skan otoczenia i budowa mapy}
 \label{sec:scan}
-%>TODO powiedz o tym jak sie skaszaniło przy przewodzie pod podłogą<<<<<<<<<<<<<< koniecznie tutaj
-%>TODO tu napisac o bazowym mapowaniu pkt na plaszczyzne
-%o swojej implementacji ze scorem
-%nastepnie o tym co moznaby dalej (translacja korekta)
-%ale nie zostalo zrobione bo bylo slabe i to wymaga filtrow czasteczek
-%i ze jest cos takiego jak cartographer od googla
-%ale zdecydowano ze gmapper jest spoko i czemu nie gmapper
-
 Samo zebranie pomiarów i przedstawienie ich w formie czytelnej dla człowieka nie jest trudne w realizacji. Pozyskane dane można przedstawić na wykresie, punkty połączyć prostymi liniami. Problem zaczyna się z agregacją wielu pomiarów, i na tym będzie koncentrował się ten rozdział.
 
 Mając do dyspozycji dane z sensora \emph{LIDAR} oraz enkoderów i magnetometru, można rozpocząć proces skanowania. Pierwsze podejście oparte było o skan manualny, bez zliczania ścieżki - jedynie obrót był uwzględniony a dane ze skanera obracane o zczytany z sensora azymut. Robot został ustawiony w początkowej pozycji, uruchomiono procedurę skanowania za pomocą funkcji \emph{SCAN}, następnie z racji że skan zachodzi w zakresie kątów $\langle0^{\circ},180^{\circ}\rangle$, obrócony o $180^{\circ}$ (funkcja \emph{ROTATE}) po czym ponownie wykonano skanowanie. Efekt przedstawia rysunek\ref{fig:first-scan}. Jak widać, ściany pokoju (górna i dolna część rysunku) nie są równoległe. W tym momencie okazało się, że konieczna będzie kalibracja magnetometru, omówiona w rozdziale \ref{sec:odometry}. Po dokonaniu procedury kalibracji czynności powtórzono, rezultat ukazano na rysunku \ref{fig:first-magnetom-calibrated-scan}. Na dalej przedstawianych rysunkach skany mogą wyglądać nieco inaczej, głównie przez zamknięte lub otwarte drzwi pokoju - widoczne jest to na ostatnich dwóch wspomnianych rysunkach jako najdłuższe z promieni - w tym wypadku drzwi były otwarte a pomiar uwzględniał fragment przedpokoju autora. Skany przedstawiane są w zakładce \emph{map} okna głównego aplikacji sterującej.
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/ScanBot-01-room-map-nocalibration.png}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-01-room-map-nocalibration.png}
 	\caption{Pierwszy skan pokoju}
 	\label{fig:first-scan}
 \end{figure}
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.5\linewidth]{rys/ScanBot-02-room-map-calibrated.png}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-02-room-map-calibrated.png}
 	\caption{Skan pokoju po zastosowaniu kalibracji magnetometru}
 	\label{fig:first-magnetom-calibrated-scan}
 \end{figure}
@@ -348,7 +426,7 @@ W celu korekcji rzutowania punktów na płaszczyznę, pierwotnie stosowany był 
     \item Potem przeprowadzany jest kolejny skan i pomiar azymutu.
     \item Do każdego z kątów pomiaru skanu dodawany jest azymut.
     \item W pętli, dla każdej z wartości $i$, gdzie $i={-10,-9,...,9,10}, i \in \mathbb{Z}$ do każdego z kątów dodawana jest wartość $i$ oraz sprawdzany i zapisywany jest parametr \emph{score} w sposób opisany w dalszej części dokumentu.
-    \item Sprawdzane jest dla jakiego $i$ wartość parametru \emph{score} była największa. >TODO-sprawdzić-najw-najmn? 
+    \item Sprawdzane jest dla jakiego $i$ wartość parametru \emph{score} była największa. 
     \item Wyszukana wartość $i$ jest ostatecznie dodawana do wartości każdego z kątów pomiaru razem ze zmierzonym azymutem. Ta sama wartość jest dodawana do azymutu w którym skierowany jest robot - w ten sposób następuje jego korekcja. Kolejny pomiar i korekcja następuje od punktu 3 niniejszej listy.
 \end{enumerate}
 
@@ -387,7 +465,7 @@ Doświadczalnie został dobrany próg wartości \emph{score} równy 2500. Jeśli
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-13-angular-alignment-1yellow-2pink-3correctedgreen.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-13-angular-alignment-1yellow-2pink-3correctedgreen.PNG}
 	\caption{Zobrazowana zasada działania korekcji kąta przy użyciu współczynnika \emph{score}}
 	\label{fig:score-alignment-rule}
 \end{figure}
@@ -398,68 +476,57 @@ Ewaluacja tego algorytmu dla całego pokoju została ukazana na rysunkach \ref{f
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-14-angular-alignment.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-14-angular-alignment.PNG}
 	\caption{Pięć skanów otoczenia nałożonych z pomocą korekcji korzystającej ze współczynnika \emph{score}}
 	\label{fig:score-alignment-eval-1}
 \end{figure}
 
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/ScanBot-15-angular-alignment.PNG}
+		\includegraphics[width=0.6\linewidth]{rys/ScanBot-15-angular-alignment.PNG}
 	\caption{Kolejne pięć skanów z korekcją kąta}
 	\label{fig:score-alignment-eval-2}
 \end{figure}
 
+Pomimo iż algorytm działa i spełnia założone zadanie - problem \emph{SLAM} jest dużo bardziej złożony. Pierwotnie w planach autor planował wdrożenie podobnej korekcji dla translacji pojazdu oraz uśrednianie pozycji punktów na mapie. Jednak ze względu na dużą złożoność problemu i ograniczony czas autor zadecydował o skorzystaniu z istniejących rozwiązań. Pomocnym był tutaj zestaw narzędzi \emph{ROS}. Zawiera on wiele gotowych komponentów wykorzystywanych w robotyce, m. in. moduły adresujące problem \emph{SLAM}. Jednym z takich modułów jest \emph{slam\_gmapping} zawierający implementację algorytmu \emph{gmapping}\cite{Grisetti2005}\cite{gmapping-website}\cite{gmapping-ros}. Od tego momentu mapa sporządzana jest w środowisku \emph{ROS} i przedstawiana w programie \emph{RViz}. Finalna wersja aplikacji sterującej współpracuje ze środowiskiem publikując odpowiednie dane na wyznaczonych w tym celu tematach. Dokładniej obrazuje to schemat opisany w podrozdziale \ref{sec:pc-software}.
 
+Kiedy całe środowisko zostało zestawione, przystąpiono do ręcznych testów jakości pracy platformy. Węzeł \emph{gmapping} uruchomiony został z parametrami domyślnymi. Już przy pierwszej ewaluacji (rysunek \ref{fig:mag-interference-first}) zauważono pewne nieprawidłowości. W tym momencie okazało się, że korzystanie z magnetometru przy odometrii nie było dobrym pomysłem. Pod podłogą prawdopodobnie w tym miejscu biegnie przewód elektryczny generując m. in. zmienne pole magnetyczne, zakłócając pracę magnetometru do takiego stopnia w którym odczytane dane są bezużyteczne i niemożliwe jest odtworzenie rzeczywistego pomiaru. Widoczne jest to w postaci bezładnie rozrzuconych punktów na górnmej części rysunku, promieniujących od punktu w którym znajduje się robot.
+\\
 
-%>TODO teraz zmiana na RViz
-
-%>TODO napisz o interferencji
-
-%%przewod - interferencja
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/calibrated-mag-high-interference-broken-rotation.PNG}
-	\caption{>TODO}
-	\label{fig:xxx}
+	    \includegraphics[width=0.6\linewidth]{rys/2020-11-04-170347_1920x1080_scrot.PNG}
+	\caption{Mapa domu, uszkodzona na skutek interferencji magnetycznych}
+	\label{fig:mag-interference-first}
 \end{figure}
 
-%% znowu przewod
+Aby zweryfikować przypuszczenia autor wykonał serię pomiarów za pomocą przycisku \emph{MEASURE [AUTO]} z zakładki \emph{magnetometer calibration}. To co zostało uwidocznione na rysunku \ref{fig:mag-interference-graph} z pewnością nie przypomina okręgu co potwierdza że w tym obszarze występują zakłócenia. Z tego powodu zmieniono sposób zliczania obrotu, co zostało opisane w rozdziale \ref{sec:odometry}.
+
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/2020-11-04-170347_1920x1080_scrot.PNG}
-	\caption{>TODO}
-	\label{fig:xxx}
+		\includegraphics[width=0.6\linewidth]{rys/calibrated-mag-high-interference-broken-rotation.PNG}
+	\caption{Seria pomiarów ze skalibrowanego magnetometru w obszarze silnych zakłóceń}
+	\label{fig:mag-interference-graph}
 \end{figure}
 
+Niestety, wykorzystując mniej dokładną metodę zliczania algorytm \emph{gmapping} również traci na jakości działania. Pomiar jest odporny na zakłócenia magnetyczne ale występuje problem przy wjeździe robota do nowych pomieszczeń. Nie mając wielu punktów odniesienia, z dużym błędem rotacji nowe pokoje są wyraźnie obrócone względem stanu rzeczywistego co przedstawia rysunek \ref{fig:encoder-only-run-first} na którym zaznaczono również kolejność skanowania pomieszczeń (1 - pokój autora, 2 - przedpokój, 3 - kuchnia, 4 - drugi pokój). Wpływa to bardzo negatywnie na późniejsze pomiary - mimo wszelkich starań nie udało się ukończyć skanu wszystkich pokojów.
+\\
 
-%>TODO odometria jest słaba, nie pozwala na skan całego domu. Na ten moment obszar ograniczony został do pojedynczego pokoju.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/saved-map-2-encoder-only-cropped-upscaled-path-withscale.png}
+	\caption{Mapa domu, obrót zliczany za pomocą enkoderów}
+	\label{fig:encoder-only-run-first}
+\end{figure}
 
-%TODO skany z wykorzystaniem algorytmu jazdy autonomicznej (mozna ew. dorobić ścieżkę)
+Ze względu na długi czas ewaluacji skanu całego domu oraz szybko kumulujący się błąd, w dalszej części obszar został zawężony jedynie do pokoju autora. Zaimplementowany również został algorytm samodzielnej jazdy robota, opisany w podrozdziale \ref{sec:autonomous-drive}.
+
+Wyniki dwóch przejść robota po pomieszczeniu autora z wykorzystaniem autorskiego algorytmu jazdy autonomicznej przedstawiono na rysunkach \ref{fig:final-scans}.
 
 
-
-
-
-\subsubsection{UMBenchmark\cite{Borenstein1995}}
-%>TODO tu dac fotki koniecznie
-%jakies rysunki nabazgrane z kwadratami
-% i powiedziec ze sie nie pokrywalo najlepiej
-% dac tabelke z pozycjami
-% pokazac obliczenia center of gravity itd
-% wyszlo ~1proc czyli to bez sensu
-% wiec robot juz jezdzi wystarczajaco dobrze
-
-% >TODO nawiaz do wczesniej wspomnianych rzeczy
-% powiedz co po kolei jak sie zmieniało
-% z czym były problemy
-% o tutaj mala podpowiedz:
-% sensor dzwieku jest do kitu za duza fluktuacja pluz ogromny kąt plus za duzy blad pomiaru plus za dlugi pomiar
-% sharp mniejszy kąt mniejsza fluktuacja krotki pomiar ale podatnosc na swiatlo
-% lidar super miodzio
-% serwo kiepskie i wibruje/zacina się co powoduje błędy na krawędziach
-% magnetometr-biblioteka koryguje jedynie hard iron i jest do kitu
-% ze wzgledu na moc obliczeniowa najlepiej bylo samemu zaimplementowac soft i hard iron
-% zeby bylo prosciej tylko 2 wymiary, niestety nie kompensujemy tiltu. ale i tak zalozenie jest ze jezdzimy po plaskim
-
-% używanie arcsin zamiast atan2 z ifami podowowało błąd że correction czasem obracał elipsę nie w tę stronę
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.8\linewidth]{rys/saved-map-final-1and2-cropped-upscaled-withscale.png}
+	\caption{Mapa pomieszczenia powstała podczas jazdy autonomicznej robota}
+    \label{fig:final-scans}
+\end{figure}

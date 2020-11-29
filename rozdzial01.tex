@@ -1,6 +1,6 @@
 \chapter{Wprowadzenie}
 \section{Wstęp}
-
+%>TODO koniecznie wspomnij o processingu i daj cytacje!!!!!!!!!!!!!!!!!!!!!!!
 
 Wraz z rozwojem technologii i wciąż rosnącym popytem na nowinki elektroniczne łatwo jest zaobserwować jak z biegiem czasu pewne rozwiązania adaptowane są do użytku codziennego. Sprzęt niegdyś będący jedynie drogą ciekawostką staje się akcesorium bez którego coraz trudniej jest wyobrazić sobie normalne życie. Tak było z komputerami osobistymi, płatnościami elektronicznymi, dostępem do Internetu, następnie do listy dołączyły smartfony, hulajnogi elektryczne czy douszne słuchawki bluetooth. Coraz popularniejsze stają się także rozwiązania IoT (ang. \emph{Internet of Things}) z zakresu AGD - inteligentne pralki, lodówki, odkurzacze. I to właśnie ostatnie z rozwiązań szczególnie przykuło uwagę autora. 
 
@@ -48,7 +48,7 @@ Z biegiem lat, rozwojem algorytmów nawigacji oraz (co najważniejsze w kontekś
 %>TODO może lepiej uzasadnij
 Ze względu na niewielkie doświadczenie autora w dziedzinie komputerowego przetwarzania obrazów, w niniejszej pracy wykorzystany zostanie jeden z algorytmów działających w technologii SLAM - Gmapping, oparty o rao-blackwellizowany filtr cząstek \cite{Murphy2000}\cite{Grisetti2005}\cite{Grisetti2007}.
 
-W Tab. \ref{tab:lidar-comparison} przedstawiono porównanie wybranych, dostępnych aktualnie na polskim rynku sensorów. Można wydzielić tutaj dwie zasadnicze grupy - jednostki mierzące punktowo oraz te które mierzą pewien obszar w jednym lub dwóch wymiarach. Te pozycje które nie mają określonego \emph{kąta widzenia w poziomie} należą do drugiej kategorii. Takie czujniki posiadają mechanizmy multipleksacji strumienia świetlnego, np. w postaci obrotowej wieżyczki na której zamontowany jest laser. 
+W Tab. \ref{tab:lidar-comparison} przedstawiono porównanie wybranych, dostępnych aktualnie na polskim rynku sensorów. Można wydzielić tutaj dwie zasadnicze grupy - jednostki mierzące punktowo oraz te które mierzą pewien obszar w jednym lub dwóch wymiarach. Te pozycje które nie mają określonego \emph{kąta widzenia w poziomie} należą do drugiej kategorii. Takie czujniki posiadają mechanizmy multipleksacji strumienia świetlnego, np. w postaci obrotowej wieżyczki na której zamontowany jest laser. Należy również zaznaczyć, że maksymalna częstotliwość pomiarów w tych sensorach oznacza pomiar całego mierzonego obszaru, w czujnikach mierzących punktowo dotyczy ona pojedynczego punktu.
 
 Niestety, o ile jest to rozwiązanie wygodne, zwalniające inżyniera z potrzeby budowania własnej wieżyczki, o tyle takie sensory są dużo droższe - najtańszy z nich \emph{Slamtec RPLidar A1M8} kosztuje 500 złotych, będąc nawet poniżej półki cenowej droższych rozwiązań mierzących punktowo. Najtańszy z dostępnych \emph{Benewake Lidar TF Luna} posiada dwudziestocentymetrową martwą strefę, nie odstając znacząco od konkurencji, gdzie najmniejszą strefą charakteryzuje się ośmiokrotnie droższy sensor \emph{SparkFun Lidar Lite v3HP}. Martwą strefę można zmniejszyć, montując sensor w cofnięciu od osi obrotu, należy wówczas dodać odpowiedni dystans do zmierzonej wartości. Minusem takiego rozwiązania jest większy rozmiar wiązki przy takiej samej odległości od obiektu. 
 
