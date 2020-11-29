@@ -3,8 +3,9 @@
 \subsection{Struktura oprogramowania}
 %>TODO czas przyszły, nie mów o ROSie i RViz jeszcze, to przyjdzie potem>wywal rviz i ros stad
 %>TODO opisz procedurę połączenia oraz jego schemat
+%>TODO daj link do repo https://github.com/Tomaszu97/ScanBot/
 
-Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na Rys. \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na Rys. \ref{fig:rviz-window}.
+Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na rysunku \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na rysunku \ref{fig:rviz-window}.
 
 \subsubsection{Okno główne programu}
 \begin{figure}[ht]
@@ -52,7 +53,7 @@ Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zad
     \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtru Kalmana\cite{Kedzierski2016} zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
 \end{itemize}
 
-Zakładka \emph{map} (Rys. \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu.
+Zakładka \emph{map} (rysunek \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.8\linewidth]{rys/main-app-view-map.PNG}
@@ -60,7 +61,7 @@ Zakładka \emph{map} (Rys. \ref{fig:main-app-map-section}) zawiera wykres który
 	\label{fig:main-app-map-section}
 \end{figure}
 
-Zakładka \emph{raw output} (Rys. \ref{fig:main-app-raw-output-section}) zawiera pełnowymiarowy podgląd na historię wysyłanych i odbieranych danych. Jest większą wersją okienka \emph{output} sekcji \emph{CONSOLE}.
+Zakładka \emph{raw output} (rysunek \ref{fig:main-app-raw-output-section}) zawiera pełnowymiarowy podgląd na historię wysyłanych i odbieranych danych. Jest większą wersją okienka \emph{output} sekcji \emph{CONSOLE}.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.8\linewidth]{rys/main-app-view-raw-output.PNG}
@@ -68,7 +69,7 @@ Zakładka \emph{raw output} (Rys. \ref{fig:main-app-raw-output-section}) zawiera
 	\label{fig:main-app-raw-output-section}
 \end{figure}
 
-Zakładka \emph{magnetometer calibration} (Rys. \ref{fig:main-app-mag-section}) zawiera zestaw elementów wykorzystywanych do kalibracji magnetometru. Informacje o stosowanych metodach i przebiegu kalibracji znajdują się w rozdziale \ref{sec:odometry}.
+Zakładka \emph{magnetometer calibration} (rysunek \ref{fig:main-app-mag-section}) zawiera zestaw elementów wykorzystywanych do kalibracji magnetometru. Informacje o stosowanych metodach i przebiegu kalibracji znajdują się w rozdziale \ref{sec:odometry}.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.8\linewidth]{rys/main-app-view-magnetom.PNG}
@@ -98,7 +99,7 @@ Podczas pracy programu aktualna pozycja robota jest reprezentowana jako obiekt z
 \end{figure}
 
 Aplikacja komputerowa po uruchomieniu w środowisku ROS widoczna jest jako jeden z węzłów (node). W celu sporządzania mapy komunikuje się z innymi węzłami za pośrednictwem tematów (topics).
-Na Rys. \ref{fig:pc-app-ros-infrastructure} ukazany jest schemat komunikacji poszczególnych węzłów.
+Na rysunku \ref{fig:pc-app-ros-infrastructure} ukazany jest schemat komunikacji poszczególnych węzłów.
 Wykorzystywane są trzy tematy:
 \begin{itemize}
     \item \emph{tf} jest tematem na którym publikowane są wszelkie translacje, czyli zależności między układami odniesienia
@@ -155,7 +156,7 @@ Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, d
 Klasa \emph{SerialConnection} służy do obsługi komunikacji interfejsu szeregowego konwertera USB-UART. Zawiera funkcje służące do nawiązywania połączenia, wysyłania komend i odbierania odpowiedzi od robota. Ponadto posiada uchwyt do klasy głównej, dzięki czemu wymieniane dane prezentuje zarówno w polu tekstowym w sekcji okna \emph{CONSOLE} jak i w zakładce \emph{raw output}.
 
 \subsection{Jazda autonomiczna}
-W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem Rys. \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
+W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
 \begin{itemize}
     \item \emph{FRONT ZONE} (strefa F)
     \item \emph{LEFT ZONE 1} (strefa L1)
@@ -169,10 +170,10 @@ W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algory
 	\label{fig:autodrive-zones}
 \end{figure}
 
-Należy zwrócić uwagę, że  Rys. \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0° do 180° , liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota.
+Należy zwrócić uwagę, że rysunek \ref{fig:autodrive-zones} ma charakter poglądowy i nie jest wykonany w skali. Platforma znajduje się tutaj w punkcie środkowym układu współrzędnych, rysunek przedstawia zakres kątów od 0° do 180° , liczonych od kierunku prawego przeciwnie do ruchu wskazówek zegara. W tej samej kolejności przedstawiane są dane zeskanowane przez robota.
 \\
 Wymiary stref zostały dobrane metodą prób i błędów, dostrajane do momentu w którym robot był w stanie samodzielnie okrążyć pokój bez wjeżdżania w przeszkody.
-Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rys. \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione poniżej wartości.
+Wielkości kroków to kolejne z parametrów którymi można regulować jakość pracy algorytmu. Rysunek \ref{fig:autodrive-algorithm} prezentuje jego funkcjonowanie w oparciu o wymienione poniżej wartości.
 
 \begin{itemize}
     \item zakres kątów obejmujących strefę \emph{F} to $\langle70^{\circ}, 110^{\circ}\rangle$
@@ -259,7 +260,7 @@ Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki pr
 	\label{fig:view3}
 \end{figure}
 
-Wieżyczka przedstawiona w rzucie izometrycznym na Rys. \ref{fig:tower} została zaprojektowana osobno. Sensor zostanie zamontowany w przesunięciu względem osi w celu częściowej redukcji jego martwej strefy. Powstanie w ten sam sposób i z tego samego materiału co reszta platformy.
+Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} została zaprojektowana osobno. Sensor zostanie zamontowany w przesunięciu względem osi w celu częściowej redukcji jego martwej strefy. Powstanie w ten sam sposób i z tego samego materiału co reszta platformy.
 
 \begin{figure}[ht]
 	\centering
@@ -268,7 +269,7 @@ Wieżyczka przedstawiona w rzucie izometrycznym na Rys. \ref{fig:tower} została
 	\label{fig:tower}
 \end{figure}
 
-Gąsienica widoczna na Rys. \ref{fig:tracks} będzie wydrukowana w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne będą dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
+Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne będą dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
 
 \begin{figure}[ht]
 	\centering
