@@ -23,7 +23,7 @@ aplikacji z danych zebranych z otoczenia robota ma powstać dwuwymiarowa mapa po
 \section{Koncepcja projektu}
 Po pierwsze robot powinien posiadać zasilanie akumulatorowe - w przeciwnym wypadku wymagałby podania zasilania za pośrednictwem przewodu, co byłoby niepraktyczne. Aby zasilania starczyło na jak najwięcej czasu dobrze by było, aby nie wykorzystywał zgromadzonej energii na obliczenia, które mogą zostać wykonane po stronie aplikacji go kontrolującej. Z tego względu do kontroli peryferiów platformy został wykorzystany mikrokontroler.
 
-Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania takie jak RPLidar A1M8, lub RPLIDAR A2M6 >TODO przypisy do sprzetu, korzystające z lasera obracającego się na podstawie, jednak są na tyle kosztowne, że ostatecznie zdecydowano się na tańszą alternatywę - Lidar TF Luna. Różnica w cenie tańszego z dwóch wymienionych wcześniej czujników a wybranego to na dzień dzisiejszy ponad 1500 złotych. Sensor odległości zamontowany na wieżyczce obracanej za pomocą serwomechanizmu  w zakresie od 0° do 180° jest wystarczający do realizacji tego zadania.
+Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania takie jak RPLidar A1M8 \cite{lidar-datasheet-6}, lub RPLIDAR A2M6 \cite{lidar-datasheet-10}, korzystające z lasera obracającego się na podstawie, jednak są na tyle kosztowne, że ostatecznie zdecydowano się na tańszą alternatywę - Lidar TF Luna. Różnica w cenie tańszego z dwóch wymienionych wcześniej czujników a wybranego to na dzień dzisiejszy ponad 1500 złotych. Sensor odległości zamontowany na wieżyczce obracanej za pomocą serwomechanizmu  w zakresie od 0° do 180° jest wystarczający do realizacji tego zadania.
 
 Żeby pozycja wcześniej wspomnianych punktów była odwzorowywała rozkład pomieszczenia platforma powinna realizować zadanie nawigacji zliczeniowej (odometrii). Dzięki temu możliwe jest oszacowanie aktualnej pozycji i przemieszczenia robota w przestrzeni względem jego pozycji startowej. Dopiero korzystając z tych danych połączonych z kierunkiem i dystansem do przeszkody można umieścić ją na mapie.
 
@@ -52,7 +52,6 @@ Niestety, o ile jest to rozwiązanie wygodne, zwalniające inżyniera z potrzeby
 
 Nie mniej jednak najniższy pobór energii, wystarczająca częstotliwość próbkowania i akceptowalny zasięg 8 metrów (przeciętny pokój ma wymiary od kilku do kilkunastu metrów mierząc od najodleglejszych punktów) są tutaj największymi atutami czujnika firmy \emph{Benewake}. Mając na uwadze wyżej wymienione parametry oraz ograniczony budżet autor zdecydował się na wykorzysytanie właśnie tego urządzenia.
 
->TODO przypisy do dokumentacji sprzetow
 \begin{table}
     \caption{Przegląd dostępnych na rynku sensorów LIDAR}
      \label{tab:lidar-comparison}

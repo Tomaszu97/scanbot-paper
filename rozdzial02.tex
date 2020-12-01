@@ -203,28 +203,33 @@ Dzięki zastosowaniu mikrokontrolera jako jednostki sterującej mobilną platfor
 Pierwszym kierunkiem w którym udał się autor były popularne dziś płytki Arduino, czego głównym powodem jest łatwość szybkiego prototypowania i szeroki wachlarz gotowych rozwiązań obsługujących różne sensory, serwomechanizmy, wyświetlacze i wiele innych. Płytka nie powinna być zbyt duża, dlatego na uwadze były mniejsze egzemplarze takie jak np. Arduino Nano. Jednak ze względu na niskie taktowanie procesora (16MHz) i niewiele pamięci Flash (32kB) na program wybrana została alternatywa - tzw. płytka ``blue pill``\cite{bluepill}. Jest to nieoficjalna płytka, podobna do Arduino. Można ją zaś programować w tym samym środowisku i wykorzystywać wiele (choć nie wszystkie) z bibliotek napisanych pod oficjalnie wspierane płytki. Jest tak dzięki zestawowi bibliotek STM32duino \cite{stm32duino-github} zapewniających kompatybilność z wcześniej wspomnianym środowiskiem. Do kompilacji i wgrania programu zostało wykorzystane kompatybilne z Arduino - PlatformIO IDE \cite{platformio}.
 \\
 
-Program działający na platformie wykonuje jedynie proste polecenia odebrane od aplikacji sterującej i odpowiada prostym potwierdzeniem, wartością lub listą wartości. Poniżej wylistowano polecenia:
+Program działający na platformie wykonuje proste polecenia odebrane od aplikacji sterującej i odpowiada prostym potwierdzeniem, wartością lub listą wartości. 
+Składnia prezentuje się następująco: \\
+
+\emph{KOMENDA:[PARAMETR\_1][,PARAMETR\_2][,PARAMETR\_N]#}\\
+
+Każdy parametr oddzielony jest przecinkiem, w przypadku jego braku po komendzie od razu następuje znak \emph{#} bez dwukropka.
+Poniżej wylistowano wszystkie dostępne komendy wraz z parametrami:
 
 \begin{enumerate}
-    \item \emph{DRIVE} - ustaw zadaną prędkość na gąsienicach
-    \item \emph{ROTATE\_TOWER} - obróć wieżyczkę na żądaną pozycję
-    \item \emph{KILL} - odłącz sygnał sterujący od serwomechanizmów
-    \item \emph{PRINT} - pokaż tekst na wyświetlaczu
-    \item \emph{BEEP} - wydaj serię dźwięków o zdefiniowanej liczbie i czasie trwania
-    \item \emph{GET\_MAG} - zwróć surowy pomiar z osi X i Y magnetometru
-    \item \emph{GET\_AZIMUTH} - zwróc azymut w którym skierowany jest robot
-    \item \emph{GET\_DISTANCE} - zmierz odległość od przeszkody
-    \item \emph{GET\_TIME} - zwróć wartość czasu w milisekundach od uruchomienia robota
-    \item \emph{MOVE} - przemieść się o zadany dystans do przodu lub do tyłu
-    \item \emph{ROTATE\_TO} - obróć się na zadany azymut
-    \item \emph{ROTATE} - obróć się o kąt
-    \item \emph{SCAN} - skanuj otoczenie
-    \item \emph{SET\_MAG\_CAL} - ustaw wartości do kalibracji magnetometru
-    \item \emph{GET\_MAG\_CAL} - pobierz wartości kalibracji
-    \item \emph{RESET} - uruchom ponownie robota
+    \item \emph{DRIVE} - ustaw zadaną prędkość na gąsienicach. Przyjmuje dwa parametry liczbowe oznaczające prędkość lewej i prawej gąsienicy. Zakres wartości obu parametrów to $\langle-90,90\rangle$
+    \item \emph{ROTATE\_TOWER} - obróć wieżyczkę na żądaną pozycję. Przyjmuje jeden parametr liczbowy w zakresie $\langle0,180\rangle$.
+    \item \emph{KILL} - odłącz sygnał sterujący od serwomechanizmów.
+    \item \emph{PRINT} - pokaż tekst na wyświetlaczu. Przyjmuje jeden parametr tekstowy jakim jest tekst do wyświetlenia.
+    \item \emph{BEEP} - wydaj serię dźwięków o zdefiniowanej liczbie i czasie trwania. Przyjmuje dwa parametry liczbowe - pierwszy oznacza czas trwania impulsu w milisekundach, drugi liczbę impulsów.
+    \item \emph{GET\_MAG} - zwróć surowy pomiar z magnetometru. Zwraca dwa parametry, kolejno wartości pomiaru dla osi X i Y.
+    \item \emph{GET\_AZIMUTH} - zwróc azymut w którym skierowany jest robot. Zwracana wartość wyrażona jest w stopniach.
+    \item \emph{GET\_DISTANCE} - zmierz odległość od przeszkody. Zwraca wartość w centymetrach.
+    \item \emph{GET\_TIME} - zwróć wartość czasu od uruchomienia robota. Wartość wyrażona jest w milisekundach.
+    \item \emph{MOVE} - przemieść się o zadany dystans do przodu lub do tyłu. Przyjmuje jeden parametr jakim jest dystans w centymetrach.
+    \item \emph{ROTATE\_TO} - obróć się na zadany azymut. Przyjmuje jeden parametr wyrażony w stopniach.
+    \item \emph{ROTATE} - obróć się o kąt. Przyjmuje jeden parametr wyrażony w stopniach.
+    \item \emph{SCAN} - skanuj otoczenie. Zwraca serię pomiarów dla każdego z $n$ kątów, gdzie $n\in{\langle0,180\rangle}$. Pomiary oddzielone są przecinkami i wyrażone w centymetrach.
+    \item \emph{SET\_MAG\_CAL} - ustaw wartości do kalibracji magnetometru. Przyjmuje cztery parametry - ujemną wartość przesunięcia X, ujemną wartość przesunięcia Y, parametr $\theta$ i parametr $\sigma$ objaśnione dalej w rozdziale \ref{sec:mag-cal}. 
+    \item \emph{GET\_MAG\_CAL} - pobierz wartości kalibracji magnetometru z robota. Zwracane parametry mają taką samą formę jak przyjmowane przez wyżej wymienione polecenie.
+    \item \emph{RESET} - uruchom ponownie robota.
 \end{enumerate}
 
->TODO wyjaśnić parametry komend
 
 \section{Schemat budowy mechanicznej}
 Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd >TODO przypis. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
