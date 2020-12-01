@@ -1,6 +1,5 @@
 \chapter{Wprowadzenie}
-\section{Wstęp}
-%>TODO koniecznie wspomnij o processingu i daj cytacje!!!!!!!!!!!!!!!!!!!!!!!
+\section{Wstęp}\
 
 Wraz z rozwojem technologii i wciąż rosnącym popytem na nowinki elektroniczne łatwo jest zaobserwować jak z biegiem czasu pewne rozwiązania adaptowane są do użytku codziennego. Sprzęt niegdyś będący jedynie drogą ciekawostką staje się akcesorium bez którego coraz trudniej jest wyobrazić sobie normalne życie. Tak było z komputerami osobistymi, płatnościami elektronicznymi, dostępem do Internetu, następnie do listy dołączyły smartfony, hulajnogi elektryczne czy douszne słuchawki bluetooth. Coraz popularniejsze stają się także rozwiązania IoT (ang. \emph{Internet of Things}) z zakresu AGD - inteligentne pralki, lodówki, odkurzacze. I to właśnie ostatnie z rozwiązań szczególnie przykuło uwagę autora. 
 
@@ -24,18 +23,18 @@ aplikacji z danych zebranych z otoczenia robota ma powstać dwuwymiarowa mapa po
 \section{Koncepcja projektu}
 Po pierwsze robot powinien posiadać zasilanie akumulatorowe - w przeciwnym wypadku wymagałby podania zasilania za pośrednictwem przewodu, co byłoby niepraktyczne. Aby zasilania starczyło na jak najwięcej czasu dobrze by było, aby nie wykorzystywał zgromadzonej energii na obliczenia, które mogą zostać wykonane po stronie aplikacji go kontrolującej. Z tego względu do kontroli peryferiów platformy został wykorzystany mikrokontroler.
 
-Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania takie jak RPLidar A1M8, lub RPLIDAR A2M6, korzystające z lasera obracającego się na podstawie, jednak są na tyle kosztowne, że ostatecznie zdecydowano się na tańszą alternatywę - Lidar TF Luna. Różnica w cenie tańszego z dwóch wymienionych wcześniej czujników a wybranego to na dzień dzisiejszy ponad 1500 złotych. Sensor odległości zamontowany na wieżyczce obracanej za pomocą serwomechanizmu  w zakresie od 0° do 180° jest wystarczający do realizacji tego zadania.
+Aby móc sporządzić mapę potrzebne będą lokalizacje przeszkód w postaci punktów reprezentowanych na dwuwymiarowej płaszczyźnie. Taki punkt można obliczyć znając odległość i kierunek do przeszkody względem robota - potrzebuje on więc  sensorów dzięki którym będzie w stanie tą odległość zmierzyć. Istnieją gotowe rozwiązania takie jak RPLidar A1M8, lub RPLIDAR A2M6 >TODO przypisy do sprzetu, korzystające z lasera obracającego się na podstawie, jednak są na tyle kosztowne, że ostatecznie zdecydowano się na tańszą alternatywę - Lidar TF Luna. Różnica w cenie tańszego z dwóch wymienionych wcześniej czujników a wybranego to na dzień dzisiejszy ponad 1500 złotych. Sensor odległości zamontowany na wieżyczce obracanej za pomocą serwomechanizmu  w zakresie od 0° do 180° jest wystarczający do realizacji tego zadania.
 
 Żeby pozycja wcześniej wspomnianych punktów była odwzorowywała rozkład pomieszczenia platforma powinna realizować zadanie nawigacji zliczeniowej (odometrii). Dzięki temu możliwe jest oszacowanie aktualnej pozycji i przemieszczenia robota w przestrzeni względem jego pozycji startowej. Dopiero korzystając z tych danych połączonych z kierunkiem i dystansem do przeszkody można umieścić ją na mapie.
 
 Dla mniejszego poślizgu oraz łatwego pokonywania niewielkich, nieznaczących przeszkód takich jak przewody, listwy zasilające, dywaniki oraz dla ułatwienia obliczeń związanych z odometrią robot powinien być wyposażony w system napędowy o odpowiednio małym poślizgu.
 
-Należy również ustalić w jakim języku programowania napisane będą programy - wszakże w zależności od środowiska programista powinien spodziewać się innych możliwości i ograniczeń. Ze względu na możliwość szybkiego prototypowania i czytelność kodu do napisania oprogramowania PC wybrany został język Python\cite{python}. Do zaprogramowania robota autor wybrał język C++\cite{cpp}.
+Należy również ustalić w jakim języku programowania napisane będą programy - wszakże w zależności od środowiska programista powinien spodziewać się innych możliwości i ograniczeń. Ze względu na możliwość szybkiego prototypowania i czytelność kodu do napisania oprogramowania PC wybrany został język Python\cite{python}. Do zaprogramowania robota autor wybrał język C++\cite{cpp}. Do reprezentacji graficznej mapy stworzonej przez pojazd można posłużyć się środowiskiem \emph{Processing} \cite{GettingStartedWithProcessing} bądź podobną implementacją zgodną z językiem Python.
 
 \section{Przegląd technologii}
 Nie jest tajemnicą że inspiracją do tego projektu były coraz popularniejsze robotyczne odkurzacze. Warto jednak nadać pewien rys historii rozwoju tej branży i technologii które były stosowane na przełomie lat.
 
-Pierwszym komercyjnie dostępnym robotem odkurzającym był Electrolux Trilobite\cite{vacuum-history}. Robot ten był wyposażony w sensory ultradźwiękowe dzięki czemu zachowywał odstęp od ścian. Sensory takie nie były wystarczające - ostre obiekty bądź takie o niewielkiej powierzchni mogły zostać przeoczone dlatego też dodatkowo miał on zderzak wciskający się podczas kontaktu z przeszkodą. Do tego wykrywał on uskoki takie jak np. schody za pomocą podczerwonego sensora odległości a także był w stanie omijać strefy ręcznie wyznaczone magnetycznymi paskami umieszczonymi na powierzchni czyszczonej. Z czasem również konkurencja zaczęła się wdrażać w rynek i oferować podobne rozwiązania.
+Pierwszym komercyjnie dostępnym robotem odkurzającym był Electrolux Trilobite\cite{vacuum-history}. Robot ten był wyposażony w sensory ultradźwiękowe dzięki czemu zachowywał odstęp od ścian. Sensory takie nie były wystarczające - ostre obiekty bądź takie o niewielkiej powierzchni mogły zostać przeoczone dlatego też dodatkowo miał on zderzak wciskający się podczas kontaktu z przeszkodą. Do tego wykrywał on uskoki takie jak np. schody za pomocą czujnika wykorzystującego promieniowanie podczerwone a także był w stanie omijać strefy ręcznie wyznaczone magnetycznymi paskami umieszczonymi na powierzchni czyszczonej. Z czasem również konkurencja zaczęła się wdrażać w rynek i oferować podobne rozwiązania.
 
 Pierwsze odkurzacze nie korzystały z zaawansowanych algorytmów nawigacji, mając do dyspozycji jedynie ograniczony zasób informacji o otaczającym je środowisku ze względu na proste czujniki w nich montowane. Poruszały się one w sposób wręcz chaotyczny, ``odbijając`` się od przeszkód pod różnymi kątami, nie czyszcząc równomiernie całej powierzchni. Nie mniej jednak takie rozwiązanie było na dane czasy wystarczające i samo w sobie bardzo innowacyjne - zwalniało użytkownika z konieczności odkurzania ręcznego.
 
@@ -45,8 +44,7 @@ Z biegiem lat, rozwojem algorytmów nawigacji oraz (co najważniejsze w kontekś
 \item VSLAM (Visual SLAM) - w tym wypadku robot jest wyposażony w kamerę skierowaną bezpośrednio na sufit lub pod kątem. Dzięki zaawansowanym algorytmom przetwarzania obrazu wybiera on pewne punkty odniesienia na podstawie których szacuje swoją pozycję względem otoczenia. Technologia wymaga wyższej mocy obliczeniowej i jest mniej dokładna, nie mniej jednak pozostawia otwarte pole na innowacje w zakresie sztucznej inteligencji i rozpoznawania typu obiektów.
 \end{itemize}
 
-%>TODO może lepiej uzasadnij
-Ze względu na niewielkie doświadczenie autora w dziedzinie komputerowego przetwarzania obrazów, w niniejszej pracy wykorzystany zostanie jeden z algorytmów działających w technologii SLAM - Gmapping, oparty o rao-blackwellizowany filtr cząstek \cite{Murphy2000}\cite{Grisetti2005}\cite{Grisetti2007}.
+Ze względu na niewielkie doświadczenie autora w dziedzinie komputerowego przetwarzania obrazów, w niniejszej pracy wykorzystany zostanie jeden z algorytmów działających w technologii SLAM - Gmapping, oparty o filtr cząstek typu \emph{rao-blackwellized} \cite{Murphy2000}\cite{Grisetti2005}\cite{Grisetti2007}.
 
 W Tab. \ref{tab:lidar-comparison} przedstawiono porównanie wybranych, dostępnych aktualnie na polskim rynku sensorów. Można wydzielić tutaj dwie zasadnicze grupy - jednostki mierzące punktowo oraz te które mierzą pewien obszar w jednym lub dwóch wymiarach. Te pozycje które nie mają określonego \emph{kąta widzenia w poziomie} należą do drugiej kategorii. Takie czujniki posiadają mechanizmy multipleksacji strumienia świetlnego, np. w postaci obrotowej wieżyczki na której zamontowany jest laser. Należy również zaznaczyć, że maksymalna częstotliwość pomiarów w tych sensorach oznacza pomiar całego mierzonego obszaru, w czujnikach mierzących punktowo dotyczy ona pojedynczego punktu.
 
@@ -54,6 +52,7 @@ Niestety, o ile jest to rozwiązanie wygodne, zwalniające inżyniera z potrzeby
 
 Nie mniej jednak najniższy pobór energii, wystarczająca częstotliwość próbkowania i akceptowalny zasięg 8 metrów (przeciętny pokój ma wymiary od kilku do kilkunastu metrów mierząc od najodleglejszych punktów) są tutaj największymi atutami czujnika firmy \emph{Benewake}. Mając na uwadze wyżej wymienione parametry oraz ograniczony budżet autor zdecydował się na wykorzysytanie właśnie tego urządzenia.
 
+>TODO przypisy do dokumentacji sprzetow
 \begin{table}
     \caption{Przegląd dostępnych na rynku sensorów LIDAR}
      \label{tab:lidar-comparison}
@@ -61,17 +60,17 @@ Nie mniej jednak najniższy pobór energii, wystarczająca częstotliwość pró
     \begin{tabular}{ |p{0.1\linewidth}|p{0.1\linewidth}|p{0.1\linewidth}|p{0.12\linewidth}|p{0.12\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.05\linewidth}| } \hline
 	Producent, model & Zasięg & Kąt widzenia w poziomie & Dokładność & Rozbieżność wiązki & Pobór energii & Maks. częst. pomiarów & Cena \\ \hline
 	- & m & ° & m & ° & W & Hz & zł \\ \hline \hline
-	Benewake Lidar TF Luna & 0,2-8 & n/d & 0,06 (2\% dla >3m) & 2 & 0,35 & 100 & 90 \\ \hline
-	Benewake Lidar TFMini-S & 0,1-12 & n/d & 0,06 (1\% dla >6m) & 2 & 0,7 & 100 & 180 \\ \hline
-	Benewake Lidar TFMini Plus & 0,1-12 & n/d & 0,05 (1\% dla >6m) & 3,6 & 0,55 & 1000 & 200 \\ \hline
-	Benewake Lidar TF02 Pro & 0,1-40 & n/d & 0,05 (1\% dla >5m) & 3 & 1 & 100 & 400 \\ \hline
-	Benewake Lidar TF02 & 0,4-22 & n/d & 0,06 (2\% dla >5m) & 3 & 1 & 100 & 490 \\ \hline
-	Slamtec RPLidar A1M8 & 0,15-12 & 360 & 0,0005 (1\% dla >1,5m) & 1 & 2 & 10 & 500 \\ \hline
-	SparkFun Lidar Lite v3 & 0-40 & n/d & 0,025 & 0,46 & 0,65 & 500 & 760 \\ \hline
-	SparkFun Lidar Lite v3HP & 0,05-40 & n/d & 0,025 & 0,46 & 0,43 & 1000 & 800 \\ \hline
-	Slamtec RPLidar A2M8 & 0,15-8 & 360 & 0,0005 (1\% dla >1,5m) & 0,9 & 2,25 & 15 & 1600 \\ \hline
-	Slamtec RPLidar A2M6 & 0,15-18 & 360 & 0,0005 (1\% dla >1,5m) & 0,9 & 2,25 & 15 & 2900 \\ \hline
-	Benewake Lidar CE30-A & 0,1 - 4 & 130 & 0.06 & 0,41 & 6 & 20 & 3700 \\ \hline
+	Benewake Lidar TF Luna \cite{lidar-datasheet-1} & 0,2-8 & n/d & 0,06 (2\% dla >3m) & 2 & 0,35 & 100 & 90 \\ \hline
+	Benewake Lidar TFMini-S \cite{lidar-datasheet-2} & 0,1-12 & n/d & 0,06 (1\% dla >6m) & 2 & 0,7 & 100 & 180 \\ \hline
+	Benewake Lidar TFMini Plus \cite{lidar-datasheet-3} & 0,1-12 & n/d & 0,05 (1\% dla >6m) & 3,6 & 0,55 & 1000 & 200 \\ \hline
+	Benewake Lidar TF02 Pro \cite{lidar-datasheet-4} & 0,1-40 & n/d & 0,05 (1\% dla >5m) & 3 & 1 & 100 & 400 \\ \hline
+	Benewake Lidar TF02 \cite{lidar-datasheet-5} & 0,4-22 & n/d & 0,06 (2\% dla >5m) & 3 & 1 & 100 & 490 \\ \hline
+	Slamtec RPLidar A1M8 \cite{lidar-datasheet-6} & 0,15-12 & 360 & 0,0005 (1\% dla >1,5m) & 1 & 2 & 10 & 500 \\ \hline
+	SparkFun Lidar Lite v3 \cite{lidar-datasheet-7} & 0-40 & n/d & 0,025 & 0,46 & 0,65 & 500 & 760 \\ \hline
+	SparkFun Lidar Lite v3HP \cite{lidar-datasheet-8} & 0,05-40 & n/d & 0,025 & 0,46 & 0,43 & 1000 & 800 \\ \hline
+	Slamtec RPLidar A2M8 \cite{lidar-datasheet-9} & 0,15-8 & 360 & 0,0005 (1\% dla >1,5m) & 0,9 & 2,25 & 15 & 1600 \\ \hline
+	Slamtec RPLidar A2M6 \cite{lidar-datasheet-10} & 0,15-18 & 360 & 0,0005 (1\% dla >1,5m) & 0,9 & 2,25 & 15 & 2900 \\ \hline
+	Benewake Lidar CE30-A \cite{lidar-datasheet-11} & 0,1 - 4 & 130 & 0.06 & 0,41 & 6 & 20 & 3700 \\ \hline
 \end{tabular}
 \end{table}
 

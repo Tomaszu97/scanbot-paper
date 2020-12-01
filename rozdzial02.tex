@@ -1,11 +1,11 @@
 \chapter{Projekt}
 \section{Oprogramowanie PC}
+W niniejszym rozdziale opisana zostanie implementacja aplikacji komputerowej do sterowania platformą, jak również środowisko w którym pracuje. Część elementów stosowana była zamiennie podczas przebiegu projektu - powody zmian oraz przebieg doświadczeń dokładnie opisuje rozdział \ref{sec:evaluation}. Pełne repozytorium z kodem źródłowym aplikacji sterującej, jak również opisanego w rozdziale \ref{sec:firmware} kodu samego robota dostępne jest publicznie w serwisie \emph{github.com} \cite{scanbot-repo}.
+
 \label{sec:pc-software}
 \subsection{Struktura oprogramowania}
-%>TODO opisz procedurę połączenia oraz jego schemat
-%>TODO daj link do repo https://github.com/Tomaszu97/ScanBot/
 
-Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na rysunku \ref{fig:app-main-window}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na rysunku \ref{fig:rviz-window}.
+Robot wykonuje polecenia zadane przez aplikację sterującą oraz odpowiada na zapytania o dane. Aplikacja w ostatecznej wersji została zaimplementowana jako moduł platformy ROS\cite{ros} na systemie operacyjnym opartym o GNU/Linux. Po jej uruchomieniu ukazują się dwa okna - jedno jest oknem głównym do kontroli pojazdu, widoczne na rysunku \ref{fig:app-main-window}. Jego interfejs został stworzony w środowisku \emph{Qt5} dla języka Python \cite{qtforpython}. Drugie to okno programu RViz w którym widoczny jest podgląd pozycji robota oraz mapy którą sporządza ukazane na rysunku \ref{fig:rviz-window}.
 
 \subsubsection{Okno główne programu}
 \begin{figure}[ht]
@@ -53,7 +53,7 @@ Sekcja \emph{EXTENDED FUNCTIONS} pozwala na wykonywanie bardziej złożonych zad
     \item \emph{GET\_AZIMUTH USING KALMAN} wykonuje serię pomiarów i za pomocą prostej implementacji filtru Kalmana\cite{Kedzierski2016} zwraca przefiltrowany wynik reprezentujący azymut w którym robot jest skierowany
 \end{itemize}
 
-Zakładka \emph{map} (rysunek \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu. W ostatecznej wersji, zamiast rysowania mapy w tej zakładce, wyświetlana jest ona w programie RViz opisanym w dalszej części dokumentu. Wykres wyskalowany jest w centymetrach.
+Zakładka \emph{map} (rysunek \ref{fig:main-app-map-section}) zawiera wykres który przedstawia mapę zmierzonych punktów. Autor zdecydował o porzuceniu pomysłu z wykorzystaniem środowiska \emph{Processing} ze względu na konieczność ewaluacji całego programu w tym środowisku. Przycisk \emph{CLEAR DATA} służy do czyszczenia całego wykresu. W ostatecznej wersji, zamiast rysowania mapy w tej zakładce, wyświetlana jest ona w programie RViz opisanym w dalszej części dokumentu. Wykres wyskalowany jest w centymetrach.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[width=0.8\linewidth]{rys/main-app-view-map.PNG}
@@ -128,14 +128,14 @@ Węzeł \emph{rviz} reprezentuje program RViz i subskrybuje dwa tematy - \emph{t
 \subsubsection{Struktura aplikacji sterującej}
 \begin{figure}[ht]
 	\centering
-		\includegraphics[width=0.8\linewidth]{rys/pc-application-simplified-uml.pdf}
-	\caption{Uproszczony diagram kluczowych klas aplikacji}
-	\label{fig:simple-class-diagram}
+		\includegraphics[width=1.1\linewidth]{rys/ScanBot-PC-UML.PNG}
+	\caption{Diagram UML struktury klas aplikacji sterującej}
+	\label{fig:uml-class-diagram}
 \end{figure}
 
 W tej sekcji przedstawiony zostanie zarys najbardziej znaczących klas aplikacji sterującej. Jako że sama jej budowa nie jest kluczowym aspektem niniejszej pracy, dlatego po szczegółowe informacje dotyczące jej funkcjonowania autor odsyła do kodu źródłowego znajdującego się w dodatku A.
 
-Na diagramie \ref{fig:simple-class-diagram} ukazano najważniejsze klasy głównego programu. Głównym obiektem jest tutaj okno, instancja klasy \emph{MainWindow}. Tutaj obsłużone jest kreowanie interfejsu graficznego, czyli ustawienie przycisków, pól tekstowych i innych elementów w odpowiednich miejscach, nadanie im identyfikatorów, ustawienie ciągów tekstowych, suwaków i innych elementów graficznych. Również akcje towarzyszące kliknięciom przycisków i przesuwaniu suwaków są tutaj przypisywane do odpowiednich funkcji. Funkcje te dla lepszej organizacji oraz czytelności zostały przeniesione do innych klas zorientowanych wokół konkretnych segmentów pracy aplikacji. Obiekty tych klas dostępne są poprzez zmienne wewnątrz głównej klasy.
+Na diagramie \ref{fig:uml-class-diagram} ukazano klasy głównego programu, z których najważniejsze zostaną omówione w tej sekcji. Głównym obiektem jest tutaj okno, instancja klasy \emph{MainWindow}. Tutaj obsłużone jest kreowanie interfejsu graficznego, czyli ustawienie przycisków, pól tekstowych i innych elementów w odpowiednich miejscach, nadanie im identyfikatorów, ustawienie ciągów tekstowych, suwaków i innych elementów graficznych. Również akcje towarzyszące kliknięciom przycisków i przesuwaniu suwaków są tutaj przypisywane do odpowiednich funkcji. Funkcje te dla lepszej organizacji oraz czytelności zostały przeniesione do innych klas zorientowanych wokół konkretnych segmentów pracy aplikacji. Obiekty tych klas dostępne są poprzez zmienne wewnątrz głównej klasy.
 \\
 
 Klasa \emph{MagCalPlot} obsługuje szereg funkcji związanych z kalibracją magnetometru \ref{sec:mag_cal}. Zawiera przyciski uruchamiające funkcje związane z:
@@ -155,9 +155,11 @@ Klasa \emph{Robot} odzwierciedla surowy interfejs robota \label{sec:firmware}, d
 
 Klasa \emph{SerialConnection} służy do obsługi komunikacji interfejsu szeregowego konwertera USB-UART. Zawiera funkcje służące do nawiązywania połączenia, wysyłania komend i odbierania odpowiedzi od robota. Ponadto posiada uchwyt do klasy głównej, dzięki czemu wymieniane dane prezentuje zarówno w polu tekstowym w sekcji okna \emph{CONSOLE} jak i w zakładce \emph{raw output}.
 
+Klasa \emph{TimerEmiter} jest wykorzystywana przy wykonywaniu ręcznych pomiarów podczas kalibracji magnetometru opisanej w rozdziale \ref{sec:mag-cal}.
+
 \subsection{Jazda autonomiczna}
 \label{sec:autonomous-drive}
-W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
+W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm >TODO napisac przyczyne czemu autorski(bo tak bylo w zalozeniu) pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
 \begin{itemize}
     \item \emph{FRONT ZONE} (strefa F)
     \item \emph{LEFT ZONE 1} (strefa L1)
@@ -196,7 +198,7 @@ Wielkości kroków to kolejne z parametrów którymi można regulować jakość 
 
 \section{Firmware}
 \label{sec:firmware}
-Dzięki zastosowaniu mikrokontrolera jako jednostki sterującej mobilną platformą skanującą zużycie prądu jest bardzo małe (bez peryferiów zużywa <51mA\cite{stm32-datasheet}). Nakłada to niestety ograniczenia związane z mocą obliczeniową urządzenia i dostępną pamięcią w której przechowywany jest program. 
+Dzięki zastosowaniu mikrokontrolera jako jednostki sterującej mobilną platformą skanującą pobór energii elektrycznej jest bardzo małe (bez peryferiów pobiera prąd o wartości <51mA\cite{stm32-datasheet}). Nakłada to niestety ograniczenia związane z mocą obliczeniową urządzenia i dostępną pamięcią w której przechowywany jest program. 
 
 Pierwszym kierunkiem w którym udał się autor były popularne dziś płytki Arduino, czego głównym powodem jest łatwość szybkiego prototypowania i szeroki wachlarz gotowych rozwiązań obsługujących różne sensory, serwomechanizmy, wyświetlacze i wiele innych. Płytka nie powinna być zbyt duża, dlatego na uwadze były mniejsze egzemplarze takie jak np. Arduino Nano. Jednak ze względu na niskie taktowanie procesora (16MHz) i niewiele pamięci Flash (32kB) na program wybrana została alternatywa - tzw. płytka ``blue pill``\cite{bluepill}. Jest to nieoficjalna płytka, podobna do Arduino. Można ją zaś programować w tym samym środowisku i wykorzystywać wiele (choć nie wszystkie) z bibliotek napisanych pod oficjalnie wspierane płytki. Jest tak dzięki zestawowi bibliotek STM32duino \cite{stm32duino-github} zapewniających kompatybilność z wcześniej wspomnianym środowiskiem. Do kompilacji i wgrania programu zostało wykorzystane kompatybilne z Arduino - PlatformIO IDE \cite{platformio}.
 \\
@@ -225,7 +227,7 @@ Program działający na platformie wykonuje jedynie proste polecenia odebrane od
 >TODO wyjaśnić parametry komend
 
 \section{Schemat budowy mechanicznej}
-Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
+Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd >TODO przypis. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
 \begin{enumerate}
     \item poślizg kół pojazdu
     \item bezwładność - brak możliwości niezwłocznego zatrzymania pojazdu w punkcie
@@ -272,7 +274,7 @@ Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} zosta
 
 Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne będą dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 		\includegraphics[width=0.6\linewidth]{rys/tracks-final.png}
 	\caption{Rzut izometryczny gąsienicy}
@@ -282,9 +284,8 @@ Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym mate
 
 
 \section{Schemat elektroniczny}
->TODO napisac czemu bluetooth, czemu laser i czemu wszystkie inne elementy zostały wybrane
->TODO dac cite do linkow produktow, omowic kazdy wykorzystany
->TODO moze zrob dokladniejszy schemat
+>TODO napisac czemu bluetooth, czemu laser i czemu wszystkie inne elementy zostały wybrane, oznaczyc na rysunkach
+>TODO dac cytacje do linkow produktow, omowic kazdy wykorzystany
 
 \begin{figure}[ht]
 	\centering

@@ -1,4 +1,18 @@
 \chapter{Ewaluacja}
+\label{sec:evaluation}
+
+Poniższy rozdział opisuje sposób w jaki sposób w ramach powstałego projektu przebiegają procedury mające na celu stworzenie możliwie najbardziej oddającej rzeczywistość mapy pomieszczenia. Autor przedstawia problemy które napotkał dążąc do celu, ich genezę oraz konieczne zmiany i udoskonalenia. Również przybliżone zostały aspekty korzystania z poszczególnych dostępnych funkcjonalności.
+
+Aby rozpocząć proces ewaluacji i udoskonalania projektu robot powinien mieć zapewnione stabilne połączenie z komputerem na którym pracuje środowisko sterujące. W tym celu po otwarciu okna głównego aplikacji należy skorzystać z opisanej wcześniej sekcji \emph{CONNECTION} uprzednio łącząc elementy systemu w sposób przedstawiony na rysunku \ref{fig:pc-bt-connection}. Następnie należy wybrać odpowiedni port szeregowy i kliknąć przycisk służący do nawiązania połączenia. Po kilku sekundach, jeżeli procedura przebiegła pomyślnie, platforma wyda trzy krótkie sygnały dźwiękowe - oznacza to gotowość do przyjmowania poleceń.
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/pc-bluetooth-robot connection.png}
+	\caption{Schemat połączenia z robotem}
+	\label{fig:pc-bt-connection}
+\end{figure}
+
+Opisana procedura jest konieczna przy każdym uruchomieniu systemu. Mając to na uwadze, można przystąpić do ewaluacji opisanej w kolejnych rozdziałach.
 
 \section{Odometria}
 \label{sec:odometry}
@@ -21,8 +35,10 @@ Pierwszym pomysłem było wykorzystanie enkoderów do pomiaru translacji pojazdu
 	\label{fig:encoder-pos}
 \end{figure}
 
-Enkodery zostały zamontowane w miejscu przedstawionym na rysunek \ref{fig:encoder-pos}, symetrycznie po obu stronach podwozia. Napęd podany od serwa przez zębatkę przenosi napęd zarówno na tylne koło jak i enkoder, z przekładniami 1:1 w obu przypadkach. Dzięki takiemu rozwiązaniu pełny obrót enkodera odpowiada pełnemu obrotowi koła. Enkoder obrotowy EC-11 generuje 20 impulsów przy kącie obrotu 360°. Aby można było wyznaczyć pokonaną odległość, w pierwszej kolejnosci należy obliczyć stosunek ilości impulsów do przejechanego dystansu - w tym celu autor stworzył prosty wzór:
+Enkodery zostały zamontowane w miejscu przedstawionym na rysunek \ref{fig:encoder-pos}, symetrycznie po obu stronach podwozia. Napęd podany od serwomechanizmu przez przekładnię zębatą przenosi napęd zarówno na tylne koło jak i enkoder, z przekładniami 1:1 w obu przypadkach. Dzięki takiemu rozwiązaniu pełny obrót enkodera odpowiada pełnemu obrotowi koła. Enkoder obrotowy EC-11 generuje 20 impulsów przy kącie obrotu 360°. Aby można było wyznaczyć pokonaną odległość, w pierwszej kolejnosci należy obliczyć stosunek ilości impulsów do przejechanego dystansu - w tym celu autor stworzył prosty wzór:
 
+>TODO numeracja wzorow
+>TODO opisy poza wzorem normalna czcionka w tekscie
 \begin{center}
     $DPR = \frac{2 \pi r}{p}$ \\[5pt]
     \emph{DPR - współczynnik (ang. Distance to Pulse Ratio) wyrażany w cm/impuls} \\[5pt]
@@ -38,9 +54,9 @@ Wiedząc ile impulsów generuje enkoder, oraz znając wymiary koła w łatwy spo
     $\frac{1}{DPR} = 1.274$
 \end{center}
 
-Znając współczynnik aby obliczyć przejechany dystans wystarczy zmierzyć ilość impulsów jakie wystąpiły podczas przejazdu a następnie pomnmożyć je przez DPR. Otrzymany wynik oznacza przesunięcie robota wyrażone w centymetrach. Jako że platforma posiada dwa enkodery, a nie jest możliwe zachowanie idealnie prostego toru jazdy, wyciągana jest średnia liczba impulsów. Ze względu na grubość i wypustki na gąsienicach oraz ich poślizg rzeczywisty dystans przejechany będzie inny od zadanego. Dla kompensacji tej różnicy wartość DPR została skorygowana ręcznie do takiej, przy której błąd przemieszczenia robota zawierał się w granicy ±10\% na zadanym dystansie 100cm. Widoczna w kodzie programu, skorygowana wartość $\frac{1}{DPR}$ wynosi $1.325$ co odpowiada $DPR=0.755$ . Listing \ref{lst:move} prezentuje funkcję realizującą to zadanie.
+Znając współczynnik aby obliczyć przejechany dystans wystarczy zmierzyć liczbę impulsów jakie wystąpiły podczas przejazdu a następnie pomnmożyć je przez DPR. Otrzymany wynik oznacza przesunięcie robota wyrażone w centymetrach. Jako że platforma posiada dwa enkodery, a nie jest możliwe zachowanie idealnie prostego toru jazdy, wyciągana jest średnia liczba impulsów. Ze względu na grubość i wypustki na gąsienicach oraz ich poślizg rzeczywisty dystans przejechany będzie inny od zadanego. Dla kompensacji tej różnicy wartość DPR została skorygowana ręcznie do takiej, przy której błąd przemieszczenia robota zawierał się w granicy ±10\% na zadanym dystansie 100cm. Widoczna w kodzie programu, skorygowana wartość $\frac{1}{DPR}$ wynosi $1.325$ co odpowiada $DPR=0.755$ . Listing \ref{lst:move} prezentuje funkcję realizującą to zadanie.
 
-
+>TODO kolorowanie kodu
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=c++,caption=Fragment kodu obsługującego polecenie \emph{MOVE},label=lst:move]
 //MOVE
 case 9:
@@ -64,7 +80,7 @@ case 9:
 }
 \end{lstlisting}
 
-Podczas wykonywania polecenia \emph{MOVE} na gąsienice zadawana jest pełna prędkość i w pętli sprawdzana jest średnia ilość impulsów wygenerowanych przez enkoder. Dla optymalizacji algorytmu, zamiast przeliczać przy każdym pomiarze ilość impulsów razy wartość DPR, na początku zadana w parametrze wartość odległości jest mnożona przez $\frac{1}{DPR}$, i dalej w takiej formie ta wartość wykorzystywana przy operacji porównania. W momencie w którym średnia zliczona ilość impulsów przekroczy jej wartość, serwa zostają zatrzymane.
+Podczas wykonywania polecenia \emph{MOVE} na gąsienice zadawana jest pełna prędkość i w pętli sprawdzana jest średnia liczba impulsów wygenerowanych przez enkoder. Dla optymalizacji algorytmu, zamiast przeliczać przy każdym pomiarze liczbę impulsów razy wartość DPR, na początku zadana w parametrze wartość odległości jest mnożona przez $\frac{1}{DPR}$, i dalej w takiej formie ta wartość wykorzystywana przy operacji porównania. W momencie w którym średnia zliczona liczba impulsów przekroczy jej wartość, serwomechanizmy zostają zatrzymane.
 \\ 
 
 Obrót (funkcja \emph{ROTATE}) polega na zadaniu przeciwstawnych wartości prędkości na obie gąsienice. W celu obrotu poruszają się one przeciwbieżnie, z równymi prędkościami. Pierwsza implementacja funkcji obrotu wyglądała jak przedstawiono poniżej:
@@ -93,7 +109,7 @@ Na początku mierzony jest azymut początkowy i obliczany jest azymut końcowy (
 Takie rozwiązanie jest dobre, o ile magnetometr jest skalibrowany i funkcjonuje poprawnie. Niestety, podczas skanów okazało się że nie można polegać na pomiarach z tego sensora - więcej o tym znajduje się w sekcji \ref{sec:scan}. Z tego powodu koniecznym okazała się zmiana podejścia do pomiaru obrotu.
 
 Listing \ref{lst:rotate} przedstawia nowe podejście osbługi polecenia \emph{ROTATE}. Jest ono mniej dokładne od poprzedniego, bardziej podatne na dryf (błąd obrotu kumuluje się), natomiast taki pomiar jest odporny na zakłócenia pola magnetycznego.
-Tym razem procedura jest analogiczna jak w przypadku ewaluacji polecenia \emph{MOVE}. W pętli sprawdzana jest średnia ilość impulsów, jednak tym razem gąsienice poruszają się przeciwbieżnie. Kąt obrotu na początku należy przemnożyć przez pewien współczynnik tak aby odpowiadał on ilości impulsów. Platforma kończy ruch w momencie gdy średnia wartość przekroczy obliczony próg impulsów.
+Tym razem procedura jest analogiczna jak w przypadku ewaluacji polecenia \emph{MOVE}. W pętli sprawdzana jest średnia liczba impulsów, jednak tym razem gąsienice poruszają się przeciwbieżnie. Kąt obrotu na początku należy przemnożyć przez pewien współczynnik tak aby odpowiadał on ilości impulsów. Platforma kończy ruch w momencie gdy średnia wartość przekroczy obliczony próg impulsów.
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=c++,caption=Nowa implementacja obsługi polecenia \emph{ROTATE},label=lst:rotate]
 // ROTATE
@@ -123,7 +139,7 @@ Stosunek kąta obrotu do liczby impulsów ($0.164$) został wyznaczony eksperyme
 Taka implementacja została zachowana do końca projektu. Polecenie \emph{ROTATE\_TO} dalej korzysta ze starego sposobu z użyciem magnetometru, jednak nie jest ono wykorzystywane podczas pomiarów.
 
 \subsection{Kalibracja magnetometru}
-%>TODO przypis o zakloceniach i ich zrodlach
+\label{sec:mag-cal}
 Wykorzystywany w projekcie moduł magnetometru jest urządzeniem czułym i bardzo podatnym na zakłócenia - szczególnie jeśli mierzone jest pole magnetyczne ziemi. Poza zakłóceniami z otoczenia, występują również te wynikające z samej budowy robota - wszelkie przewody przez które płynie prąd generują swoje własne pola, nawet same metalowe elementy interferują z pomiarem. Na te zakłócenia należy zwrócić uwagę i podjąć kroki mające na celu ich kompensację. Warto też wspomnieć, że w tej pracy jednostki uzyskane z pomiaru nie mają znaczenia - jedyne co jest potrzebne w celu uzyskania informacji o kierunku w którym robot jest zwrócony to kierunek i zwrot zmierzonego wektora wartości natężenia pola.
 
 Pierwszym problemem są zakłócenia typu \emph{hard iron}. Ich obecność przejawia się w postaci stałego przesunięcia mierzonych we wszystkich trzech osiach wartości natężenia pola magnetycznego. Zmierzone wartości można przedstawić na trójwymiarowym wykresie (jak uczyniono w pierwszych wersjach aplikacji sterującej). Każda z osi wykresu odpowiada osi pomiaru natężenia pola magnetycznego. W idealnej sytuacji zbór punktów powinien być osadzony na sferze o środku w punkcie $(0,0,0)$. Tak się jednak nie dzieje, co jest widoczne na rysunku \ref{fig:3d-mag-no-cal}.
@@ -159,7 +175,7 @@ Tą procedurę dla trzech osi przedstawiają kolejno rysunki \ref{fig:3d-mag-har
 	\label{fig:3d-mag-hard-corr-z}
 \end{figure}
 
-Niestety, kształt chmury punktów wciąż daleki jest od idealnej sfery. Efektem tego jest nieliniowość uzyskanego azymutu - zmiana rzeczywistego kąta skierowania platformy względem zmiany zmierzonej będzie się znacząco różniła w zależności od początkowej pozycji. Ten efekt można by obejść za pomocą mapowania wartości przepuszczając odczyt przez funkcję odpowiedniej krzywej, jednak wymagałoby to formułowania skomplikowanego równania, bądź wyznaczenia arbitralnego przebiegu funkcji. Istnieje jednak mniej wymagające obliczeniowo podejście z zastosowaniem macierzy \cite{hard-soft-iron}. Dla uproszczenia obliczeń, zrezygnowano z pomiaru w trzech osiach, zamiast tego mierzone są jedynie natężenia pola w osiach X i Y (rysunek \ref{fig:2d-mag-no-cal}).
+Niestety, kształt chmury punktów wciąż daleki jest od idealnej sfery. Efektem tego jest nieliniowość uzyskanego azymutu - zmiana rzeczywistego kąta skierowania platformy względem zmiany zmierzonej będzie się znacząco różniła w zależności od początkowej pozycji. Ten efekt można by obejść za pomocą mapowania wartości za pomocą funkcji odpowiedniej krzywej, jednak wymagałoby to formułowania skomplikowanego równania, bądź wyznaczenia arbitralnego przebiegu funkcji. Istnieje jednak mniej wymagające obliczeniowo podejście z zastosowaniem rachunku macierzowego \cite{hard-soft-iron}. Dla uproszczenia obliczeń, zrezygnowano z pomiaru w trzech osiach, zamiast tego mierzone są jedynie natężenia pola w osiach X i Y (rysunek \ref{fig:2d-mag-no-cal}).
 
 \begin{figure}[H]
 	\centering
@@ -180,6 +196,7 @@ Tak jak w przypadku trzech wymiarów, w pierwszej kolejności dokonywana jest ko
 
 Teraz można przystąpić do procedury kompensacji zniekształceń \emph{soft iron}. Idealnie, po dokonaniu korekcji w dwóch wymiarach, punkty na wykresie można by umieścić na okręgu - tak jednak nie jest. Uzyskany kształt bardziej przypomina elipsę, i ta właściwość zostanie wykorzystana. Proces przebiega w kilku krokach:
 
+>TODO pseudokod
 \begin{enumerate}
     \item Dla każdego z punktów liczony jest promień $r$ (wektor od $(0,0)$ do danego punktu)
     \item Wyznaczana jest maksymalna wartość promienia $rmin$ i $rmax$. Te wartości odpowiadają kolejno półosi małej i półosi wielkiej elipsy.
@@ -268,6 +285,7 @@ Ze względu na ograniczone zasoby mikrokontrolera, filtracja odbywa się po stro
 
 Kolejną rzeczą która jest potrzebna jest aktualna wartość ostatniej estymacji \emph{last\_estimate}. Przy odpowiednio długim pomiarze tę wartość można ustawić na dowolną, jednak aby wartość estymatora szybciej zbiegała do estymowanej wstępnie zostaje ustawiona na zmierzoną wartość.
 
+>TODO uzasadnic czemu 20 iteracji
 Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega on w 20 iteracjach. W każdej z iteracji zachodzą dwie fazy - predykcji i korekcji.
 \\
 
@@ -276,7 +294,7 @@ Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)
     $\hat{x}(t+1)^- = \hat{x}(t)^+$ \\[5pt]
     $\sigma^2(t+1)^- = \sigma^2(t)^+$.    
 \end{center}
-Kod programu korzysta ze zmiennych \emph{est\_error} i \emph{current\_est}. Wartości apriori i aposteriori nie muszą być trzymane jednocześnie w pamięci - wystarczy nadpisywać stare zmienne. Tutaj oznaczałoby to sformułowanie konstrukcji \emph{est\_error}=\emph{est\_error} i \emph{current\_est}=\emph{current\_est} co nie jest potrzebne i dlatego zostało pominięte.
+Kod programu korzysta ze zmiennych \emph{est\_error} i \emph{current\_est}. Wartości apriori i aposteriori nie muszą być przechowywane jednocześnie w pamięci - wystarczy nadpisywać stare zmienne. Tutaj oznaczałoby to sformułowanie konstrukcji \emph{est\_error}=\emph{est\_error} i \emph{current\_est}=\emph{current\_est} co nie jest potrzebne i dlatego zostało pominięte.
 \\
 
 Faza korekcji odbywa się w pętli. Najpierw dokonywany jest pomiar z sensora (\emph{measurement}). Następnie obliczane jest wzmocnienie Kalmana (\emph{kalman\_gain}), czyli parametr wpływający na to jakie znaczenie nowy pomiar ma dla wartości estymatora oraz jego wariancji. Później, z jego wykorzystaniem obliczana jest nowa wartość estymatora (\emph{current\_est}). W kolejnej linijce aktualizowana jest wartość jego wariancji (\emph{estimate\_err}). Aktualnie wraz z każdym nowym przejściem pętli zbiega ona do niezerowej wartości, zależnej od parametru q. Gdyby ten parametr nie zaistniał, z każdą iteracją jej wartość zbiegałaby do zera. Na koniec wartość (\emph{current\_est}) kopiowana jest do (\emph{last\_est}). Dzieje się to, ponieważ aktualizacja (\emph{estimate\_err}) potrzebuje przy obliczeniach wartości aktualnej oraz poprzedniej estymatora.
@@ -355,19 +373,28 @@ Z pomocą współczynników $\alpha$ i $\beta$ obliczane są błędy wylistowane
     \item Błąd $E_{b}$ będący stosunkiem rzeczywistej długości osi do długości nominalnej
 \end{itemize}
 
-Obliczanie współczynników $E_{d}$ i $E_{b}$:
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.6\linewidth]{rys/axis-b-param.PNG}
+	\caption{Długość nominalna osi robota}
+    \label{fig:nominal-axis-width}
+\end{figure}
+
+
+Obliczanie współczynników $R$, $E_{d}$ i $E_{b}$ ukazano poniżej. Przydatny będzie tutaj parametr $b$ oznaczający rozpiętość osi zastępczej pojazdu. Jest ona równa osiom rzeczywistym i wynosi 14,22 centymetrów, co uwidoczniono na rysunku \ref{fig:nominal-axis-width}.
 
 \begin{center}
     $
     R = \frac{L : 2}{sin(\beta : 2)} = \frac{1,5 : 2}{sin(-1,33 : 2)} = -0,01 \\[5pt]
-    E_{d} = \frac{R + (b : 2)}{R - (b : 2)} = \frac{-0,01 + (b : 2)}{-0,01 - (b : 2)} \\[5pt]%%%%>TODOOOO
+    E_{d} = \frac{R + (b : 2)}{R - (b : 2)} = \frac{-0,01 + (14,22 : 2)}{-0,01 - (14,22 : 2)} = -0.997 \\[5pt]
     E_{b} = \frac{90^{\circ}}{90^{\circ} - \alpha} = \frac{90^{\circ}}{90^{\circ} - 2,33^{\circ}} = 1,03
     $
 \end{center}
 
 
-%>TODO robot jezdzi dobrze nie ma potrzeby korekcji 
-% wiec robot juz jezdzi wystarczajaco dobrze
+Parametr $R$ posłużył jedynie obliczeniu pozostałych dwóch. Współczynnik $E_{d}$ odnosi się do korekcji błędów typu b opisanych w pracy Borenstein'a (zakrzywiony tor jazdy) i jest równy stosunkowi średnic przeciwległych kół (modelu zastępczego) pojazdu. Specjalnie, w odróżnieniu do innych wartości został zaokrąglony do trzeciego miejsca po przecinku - w innym wypadku wynosiłby 1. Z tego samego powodu można uznać, że korekcja uwzględniająca ten parametr nie jest konieczna - robot jeździ wystarczająco "prosto" a ewentualne zakrzywienie toru jazdy wynika z czynników niesystematycznych (zmiany powierzchni, nierówności).
+
+Jeżeli chodzi o $E_{b}$ odnosi się on do korekcji błędów typu a - zbyt dużych lub za małych zakrętów wykonywanych w miejscu przez robota. Taki błąd wynika z różnicy między nominalnym a rzeczywistym rozstawem kół pojazdu. Stosunek tych wartości opisuje wartość tegoż współczynnika wynosząca 1,03. Oznacza to że robot podczas obrotu zachowuje się tak, jakby jego oś była dłuższa o 3\% niż przewidziano w projekcie. Mając na uwadzę czynnik jakim jest poślizg gąsienic oraz zgrubny charakter aproksymacji jego modelu, autor na podstawie pewnych intuicji i poprzednich doświadczeń był w stanie stwierdzić że taki błąd jest pomijalny. Dodatkowo, ze względu na eksperymentalny charakter implementacji zakrętu w niniejszym projekcie zastosowanie takiej korekcji byłoby bardziej skomplikowane, ponieważ długość osi nie jest nigdzie zdefiniowana.
 
 \section{Skan otoczenia i budowa mapy}
 \label{sec:scan}
@@ -430,7 +457,7 @@ W celu korekcji rzutowania punktów na płaszczyznę, pierwotnie stosowany był 
     \item Wyszukana wartość $i$ jest ostatecznie dodawana do wartości każdego z kątów pomiaru razem ze zmierzonym azymutem. Ta sama wartość jest dodawana do azymutu w którym skierowany jest robot - w ten sposób następuje jego korekcja. Kolejny pomiar i korekcja następuje od punktu 3 niniejszej listy.
 \end{enumerate}
 
-Listing \ref{lst:score-angle-correction} przedstawia fragment kodu przeprowadzający obliczanie współczynnika \emph{score}. Tutaj należy zaznaczyć, że ze względu na liczne zmiany w projekcie ten fragment nie zachował się w finalnej wersji kodu, można go natomiast podejrzeć na rezpozytorium w pliku \emph{src-pc/main.py} na gałęzi \emph{master} pod\emph{commit id} równym aba2c1510f1a661e6365f9cd4ca7dc782f013593.
+Listing \ref{lst:score-angle-correction} przedstawia fragment kodu przeprowadzający obliczanie współczynnika \emph{score}. Tutaj należy zaznaczyć, że ze względu na liczne zmiany w projekcie ten fragment nie zachował się w finalnej wersji kodu, można go natomiast podejrzeć na rezpozytorium w pliku \emph{src-pc/main.py} na gałęzi \emph{master} pod \emph{commit id} wynoszącym aba2c1510f1a661e6365f9cd4ca7dc782f013593.
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Obliczanie współczynnika \emph{score} i korekcja kąta w celu dopasowania pomiaru do mapy,label=lst:score-angle-correction]
 def calc_xy_overlap_score(self, points1, points2):
@@ -490,7 +517,7 @@ Ewaluacja tego algorytmu dla całego pokoju została ukazana na rysunkach \ref{f
 
 Pomimo iż algorytm działa i spełnia założone zadanie - problem \emph{SLAM} jest dużo bardziej złożony. Pierwotnie w planach autor planował wdrożenie podobnej korekcji dla translacji pojazdu oraz uśrednianie pozycji punktów na mapie. Jednak ze względu na dużą złożoność problemu i ograniczony czas autor zadecydował o skorzystaniu z istniejących rozwiązań. Pomocnym był tutaj zestaw narzędzi \emph{ROS}. Zawiera on wiele gotowych komponentów wykorzystywanych w robotyce, m. in. moduły adresujące problem \emph{SLAM}. Jednym z takich modułów jest \emph{slam\_gmapping} zawierający implementację algorytmu \emph{gmapping}\cite{Grisetti2005}\cite{gmapping-website}\cite{gmapping-ros}. Od tego momentu mapa sporządzana jest w środowisku \emph{ROS} i przedstawiana w programie \emph{RViz}. Finalna wersja aplikacji sterującej współpracuje ze środowiskiem publikując odpowiednie dane na wyznaczonych w tym celu tematach. Dokładniej obrazuje to schemat opisany w podrozdziale \ref{sec:pc-software}.
 
-Kiedy całe środowisko zostało zestawione, przystąpiono do ręcznych testów jakości pracy platformy. Węzeł \emph{gmapping} uruchomiony został z parametrami domyślnymi. Już przy pierwszej ewaluacji (rysunek \ref{fig:mag-interference-first}) zauważono pewne nieprawidłowości. W tym momencie okazało się, że korzystanie z magnetometru przy odometrii nie było dobrym pomysłem. Pod podłogą prawdopodobnie w tym miejscu biegnie przewód elektryczny generując m. in. zmienne pole magnetyczne, zakłócając pracę magnetometru do takiego stopnia w którym odczytane dane są bezużyteczne i niemożliwe jest odtworzenie rzeczywistego pomiaru. Widoczne jest to w postaci bezładnie rozrzuconych punktów na górnmej części rysunku, promieniujących od punktu w którym znajduje się robot.
+Kiedy całe środowisko zostało zestawione, przystąpiono do ręcznych testów jakości pracy platformy. Węzeł \emph{gmapping} uruchomiony został z parametrami domyślnymi. Już przy pierwszej ewaluacji (rysunek \ref{fig:mag-interference-first}) zauważono pewne nieprawidłowości. W tym momencie okazało się, że korzystanie z magnetometru przy odometrii nie było dobrym pomysłem. Pod podłogą prawdopodobnie w tym miejscu biegnie przewód elektryczny generując m. in. zmienne pole magnetyczne, zakłócając pracę magnetometru do takiego stopnia w którym odczytane dane są bezużyteczne i niemożliwe jest odtworzenie rzeczywistego pomiaru. Widoczne jest to w postaci bezładnie rozrzuconych punktów na górnej części rysunku, promieniujących od punktu w którym znajduje się robot.
 \\
 
 \begin{figure}[ht]
