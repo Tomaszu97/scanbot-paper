@@ -285,8 +285,7 @@ Ze względu na ograniczone zasoby mikrokontrolera, filtracja odbywa się po stro
 
 Kolejną rzeczą która jest potrzebna jest aktualna wartość ostatniej estymacji \emph{last\_estimate}. Przy odpowiednio długim pomiarze tę wartość można ustawić na dowolną, jednak aby wartość estymatora szybciej zbiegała do estymowanej wstępnie zostaje ustawiona na zmierzoną wartość.
 
->TODO uzasadnic czemu 20 iteracji
-Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega on w 20 iteracjach. W każdej z iteracji zachodzą dwie fazy - predykcji i korekcji.
+Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega on w 20 iteracjach - wartość ta została dobrana arbitralnie w celu ewentualnej późniejszej korekcji. Nie mogła być zbyt duża, aby mikrokontroler był w stanie ukończyć operację pomiaru w rozsądnym czasie. W każdej z iteracji zachodzą dwie fazy - predykcji i korekcji.
 \\
 
 Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)^-$ i odchylenia standardowego apriori $\sigma^2(t+1)^-$ dla czasu $t+1$ na podstawie analogicznych wartości aposteriori dla czasu $t$, tj.  $\hat{x}(t)^+$ i $\sigma^2(t)^+$. W tym wypadku z założenia wartość mierzona jest stała, dlatego przyjmuje się że:

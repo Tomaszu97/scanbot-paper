@@ -159,7 +159,7 @@ Klasa \emph{TimerEmiter} jest wykorzystywana przy wykonywaniu ręcznych pomiaró
 
 \subsection{Jazda autonomiczna}
 \label{sec:autonomous-drive}
-W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm >TODO napisac przyczyne czemu autorski(bo tak bylo w zalozeniu) pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
+W celu realizacji samodzielnej jazdy robot został wyposażony w autorski algorytm pozwalający na omijanie napotkanych przeszkód i poruszanie się wzdłuż ścian i podłużnych przeszkód. Możliwe było zastosowanie gotowego kodu programu, bądź implementację istniejących algorytmów w celu wykonania tego zadania, jednak z uwagi na edukacyjny charakter projektu autor postanowił opracować własne rozwiązanie. Operuje on na bardzo prostych zasadach - robot wykonuje kroki, pomiędzy którymi skanuje otoczenie i decyduje o podjętej akcji. Decyzja zapada na podstawie wykrycia przeszkód w wyznaczonych strefach. Ze względu na powiązanie z napisanym programem rysunek \ref{fig:autodrive-zones} przedstawia angielskie nazwy tychże stref. Ich kształt został wybrany ze względu na prostotę implementacji.
 \begin{itemize}
     \item \emph{FRONT ZONE} (strefa F)
     \item \emph{LEFT ZONE 1} (strefa L1)
@@ -230,9 +230,71 @@ Poniżej wylistowano wszystkie dostępne komendy wraz z parametrami:
     \item \emph{RESET} - uruchom ponownie robota.
 \end{enumerate}
 
+\section{Budowa platformy}
+Budowa robota wymaga zainwestowania pewnej ilości środków finansowych w materiały, zużycie prądu oraz potrzebne narzędzia. Do wykonania platformy skanującej potrzebne są takie akcesoria jak:
+\begin{itemize}
+    \item Drukarka 3D wraz z odpowiednim oprogramowaniem
+    \item Akcesoria lutownicze - cyna, kalafonia, obcinak, ściągacz do izolacji
+    \item Żywica epoksydowa, klej cyjanoakrylowy
+\end{itemize}
 
-\section{Schemat budowy mechanicznej}
-Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd >TODO przypis. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
+Ze względów praktycznych spis części przedstawiony w tabeli \ref{tab:parts-list} uwzględnia jedynie cenę materiałów. 
+
+\begin{table}[H]
+    \caption{Spis części potrzebnych do budowy robota}
+     \label{tab:parts-list}
+    \centering
+    \begin{tabular}{ |p{0.1\linewidth}|p{0.6\linewidth}|p{0.1\linewidth}| } \hline
+	Liczba Sztuk & Nazwa & Cena [zł] \\ \hline \hline
+    1 & Płytka ``blue pill`` STM32F103 \cite{part-list-1} & 14,61 \\ \hline
+    2 & Moduł Bluetooth HC-05 \cite{part-list-2} & 35,90 \\ \hline
+    1 & Wyświetlacz OLED \cite{part-list-3} & 26,90 \\ \hline
+    2 & Przetwornica step-down \cite{part-list-4} & 7,80 \\ \hline
+    1 & Sensor Lidar TF Luna \cite{part-list-5} & 89,00 \\ \hline
+    1 & Filament DevilDesign PLA żółty \cite{part-list-6} & 79,99 \\ \hline
+    1 & Filament DevilDesign TPU czarny \cite{part-list-7} & 69,99 \\ \hline
+    2 & Ogniwo Litowo-Jonowe \cite{part-list-8} & 26,90 \\ \hline
+    2 & Para konektorów XT30 \cite{part-list-9} & 2,39 \\ \hline
+    1 & Ładowarka pakietów Litowo-Jonowych \cite{part-list-10} & 85,90 \\ \hline
+    1 & Zasilacz do ładowarki pakietów \cite{part-list-11} & 25,90 \\ \hline
+    1 & Serwomechanizm TowerPro MG-90S \cite{part-list-12} & 14,90 \\ \hline
+    2 & Serwomechanizm TowerPro MG-995 \cite{part-list-13} & 21,89 \\ \hline
+    1 & Przycisk wł/wył z podświetleniem \cite{part-list-14} & 33,34 \\ \hline
+    1 & Płytka uniwersalna dwustronna \cite{part-list-15} & 3,90 \\ \hline
+    1 & Rolka przewodu drucianego \cite{part-list-16} & 29,90 \\ \hline
+    1 & Konwerter USB-UART \cite{part-list-17} & 23,50 \\ \hline
+    1 & Brzęczyk z generatorem \cite{part-list-18} & 0,90 \\ \hline
+    2 & Enkoder EC-11 \cite{part-list-19} & 3,90 \\ \hline \hline
+    \multicolumn{2}{|p{0.7\linewidth}|}{SUMA:} & 696,29 \\ \hline
+\end{tabular}
+\end{table}
+
+Płytka ``blue pill`` została wybrana ze względów zarówno ekonomicznych jak i praktycznych. Jest stosunkowo tania i posiada wystaczająco szybki procesor i dostateczny zestaw interfejsów do obsługi pozostałych komponentów.
+
+Moduł Bluetoooth HC-05 został wykorzystany ze względu na swoją niską cenę i popularność. Jest niezawodny i prosty w konfiguracji. Autor wykorzystywał go do wielu innych projektów i nie miał wątpliwości że zastosowanie go również w niniejszym projekcie będzie odpowiednie.
+
+Wyświetlacz OLED również jest modułem niedrogim, korzysta z popularnego sterownika \emph{SSD1306}. Jego zastosowaniem jest wyświetlanie wybranych parametrów podczas procesu \emph{debugowania}, czyli usuwania błędów z kodu programu.
+
+Przetwornice typu \emph{step-down} pozwalają na regulację napięcia wyjściowego względem wejściowego, z akumulatora. Zastosowanie dwóch sztuk ma na celu separację zasilania serwomechanizmów od sensorów i płytki sterującej - po to, aby nie wprowadzać niepotrzebnych zakłóceń do elementów logicznych.
+
+Marka filamentu stosowanego przy wydruku 3D nie ma większego znaczenia. Te przedstawione w spisie są subiektywną preferencją autora. Podobnie stosowane ogniwa Litowo-Jonowe, jednak ważne jest aby były w stanie zapewnić natężenie prądu powyżej 4 Amperów - ta wartość nie została konkretnie ustalona, jej dobór wynika z pewnych doświadczeń autora w podobnych projektach. Zgrubna zasada stosowana przy tym projekcie to zapewnienie dostępnego natężenia prądu znacznie większego niż suma poborów prądu elektrycznego poszczególnych komponentów (oddzielnie dla sekcji logicznej i serwomechanizmów). Przetwornica części logicznej została ustawiona na napięcie 5V, natomiast dla serwomechanizmów 6V dla zwiększenia momentu obrotowego.
+
+Wybrana ładowarka wraz z kompatybilnym dla niej zasilaczem również nie jest jedyną możliwą do zastosowania - tutaj również czynnikiem decyzyjnym było doświadczenie autora, jak i również pewne względy ekonomiczne.
+
+Serwomechanizm TowerPro MG-90S jest niedrogim i kompaktowym urządzeniem pozwalającym na obrót wieżyczki, zaś TowerPro MG-995 posiada odpowiedni moment obrotowy, jaki (drogą prób i błędów) okazał się wystarczający do poruszania platformy.
+
+Przycisk załączający zasilanie posiada podświetlenie ze względów estetycznych. Natężenie prądu jakie jest w stanie przewodzić powinno spełniać takie same kryteria jak w przypadku przetwornic.
+
+Płytka uniwersalna i przewód druciany posłuży połączeniu wszystkich elementów. W przypadku serwomechanizmów ze względu na większe natężenie prądu wykorzystano przewody do nich dołączone.
+
+Konwerter USB-UART ułatwi procedurę połączenia platformy z aplikacją sterującą. Po podłączeniu go z jednym z modułów HC-05 i komputerem zostanie nawiązane połączenie między dwoma modułami Bluetooth niezależnie od ustawień komputera. Pozwoli to na proste oraz szybkie wznowienie połączenia po restarcie aplikacji. Konwerter po podłączeniu widoczny jest w systemie operacyjnym jako port komunikacji szeregowej (\emph{/dev/ttyUSBX} dla systemu GNU/Linux, gdzie X jest numerem każdorazowo przypisywanym do podłączonego urządzenia).
+
+Brzęczyk z generatorem pozwala na wytwarzanie prostych komunikatów dźwiękowych. Jest kolejnym elementem przydatnym przy \emph{debugowaniu} kodu programu, ponadto w prosty sposób może sygnalizować np. gotowość robota do pracy.
+
+Enkoder obrotowy EC-11 jest niedrogim urządzeniem mechanicznym, służącym do zliczania obrotów. Pomoże w implementacji nawigacji zliczeniowej.
+
+\subsection{Budowa mechaniczna}
+Dużą przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd. Wynika on z czynników niemożliwych do zwalczenia w całości, które są naturalne w każdym fizycznym obiekcie. Do tych czynników można zaliczyć: 
 \begin{enumerate}
     \item poślizg kół pojazdu
     \item bezwładność - brak możliwości niezwłocznego zatrzymania pojazdu w punkcie
@@ -242,10 +304,6 @@ Główną przeszkodą w nawigacji zliczeniowej jest kumulujący się błąd >TOD
 Do pierwszych dwóch wymienionych czynników bezpośrednio odwołuje się jedna z decyzji projektowych. W pojeździe zostanie zastosowany gąsienicowy układ bieżny. Zwiększenie powierzchni kontaktu z podłogą zapewni bardziej stabilny obrót i jazdę platformy. Pomoże również w szybszym jej zatrzymaniu. Do trzeciego punktu sam projekt mechaniczny nie ma żadnego odniesienia, ta kwestia zostanie omówiona w podrozdziale \ref{sec:kalman}.
 
 Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki projektu są dostępne w dodatku A \label{sec:disc-addon}. Rzuty projektu przedstawione są na rysunkach \ref{fig:view1}, \ref{fig:view2} i \ref{fig:view3}. Robot powstanie na drukarce 3D działającej w technologii FDM (ang. \emph{Fused Deposition Modeling}) z materiału PLA (ang. PolyLactic Acid).
-
->TODO powiedzieć o przeniesieniu napędu, enkoderach, przełożeniu
->TODO powiedzieć o celu montowania wyświetlacza, przycisku wł. wył., sposobie ładowania i nacięciu wykonywanym z tyłu na przewody.
-
 
 \begin{figure}[H]
 	\centering
@@ -268,7 +326,11 @@ Projekt został wykonany w programie Autodesk Inventor \cite{inventor}. Pliki pr
 	\label{fig:view3}
 \end{figure}
 
-Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} została zaprojektowana osobno. Sensor zostanie zamontowany w przesunięciu względem osi w celu częściowej redukcji jego martwej strefy. Powstanie w ten sam sposób i z tego samego materiału co reszta platformy.
+Na rysunkach \ref{fig:view2} i \ref{fig:view3} uwidocznione są przekładnie zębate. Te znajdujące się na środku są przekładniami zapewniającymi napęd - połączono je z serwomechanizmami napędowymi. Z jednej strony następuje przełożenie w stosunku 1:1 na tylne koła. Bliżej przedniej części robota (po której znajduje się wyświetlacz) następuje przełożenie na koła zębate przymocowane do enkoderów obrotowych, z takim samym stosunkiem jak w poprzednim przypadku. Ma to na celu synchronizację położenia kół napędowych i enkoderów. Dzięki takiemu rozwiązaniu pośrednio mierzony jest obrót kół i możliwa jest implementacja nawigacji zliczeniowej.
+
+Przedni panel zawiera wyświetlacz służący prezentacji danych przydatnych przy rozwijaniu oprogramowania i procedurze usuwania błędów z kodu poprzez wyświetlanie pożądanych wartości na ekranie. Podświetlany przycisk znajduje się po prawej stronie wyświetlacza i służy do załączania zasilania. 
+
+Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} została zaprojektowana osobno. Sensor jest zamontowany w przesunięciu względem osi w celu częściowej redukcji jego martwej strefy. Powstał w ten sam sposób i z tego samego materiału co reszta platformy.
 
 \begin{figure}[ht]
 	\centering
@@ -277,7 +339,7 @@ Wieżyczka przedstawiona w rzucie izometrycznym na rysunku \ref{fig:tower} zosta
 	\label{fig:tower}
 \end{figure}
 
-Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne będą dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
+Gąsienica widoczna na rysunku \ref{fig:tracks} wykonana jest w innym materiale - elastycznym TPU (ang. \emph{Thermoplastic PolyUrethane}). Potrzebne były dwa egzemplarze - po jednym na stronę. Aby zniwelować poślizg względem kół a także przenieść napęd z tylnych na przednie, jej projekt posiada otwory wpasowujące się w wypustki na kołach. Dla redukcji poślizgu względem miękkich podłoży sama posiada wypustki na powierzchni zewnętrznej.
 
 \begin{figure}[H]
 	\centering
@@ -287,10 +349,9 @@ Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym mate
 \end{figure}
 
 
+\subsection{Budowa elektroniczna}
 
-\section{Schemat elektroniczny}
->TODO napisac czemu bluetooth, czemu laser i czemu wszystkie inne elementy zostały wybrane, oznaczyc na rysunkach
->TODO dac cytacje do linkow produktow, omowic kazdy wykorzystany
+Elementy elektroniczne robota połączono bez użycia płytek drukowanych. Płytka z mikrokontrolerem została osadzona w płytce uniwersalnej i przylutowana za pomocą cyny. Wszelkie peryferia podłączono na stałe (przylutowano) bądź za pomocą złączy typu goldpin, o rozstawie 2,54mm. Dla czytelności schemat \ref{fig:electronic-schematic-simplified} przedstawia uproszczony rozkład połączeń sensorów z płytką sterującą ``blue pill`` oraz zastosowane interfejsy komunikacji.
 
 \begin{figure}[ht]
 	\centering
@@ -299,3 +360,18 @@ Gąsienica widoczna na rysunku \ref{fig:tracks} będzie wydrukowana w innym mate
 	\label{fig:electronic-schematic-simplified}
 \end{figure}
 
+Rozmieszczenie elementów w przestrzeni wewnątrz obudowy robota obrazuje rysunek \ref{fig:electronic-elements-placement}. Z racji, że sensor laserowy znajduje się na zewnątrz, przewody komunikacyjne zostały wyprowadzone przez otwór w obudowie widoczny na rysunku \ref{fig:lidar-placement}. 
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=1\linewidth]{rys/elements-placement-photo.jpg}
+	\caption{Lokalizacja elementów elektronicznych w robocie}
+	\label{fig:electronic-elements-placement}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[width=0.6\linewidth]{rys/tower-placement-photo.jpg}
+	\caption{Przewody sygnałowe i zasilające sensora laserowego}
+	\label{fig:lidar-placement}
+\end{figure}
