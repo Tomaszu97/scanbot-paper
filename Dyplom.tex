@@ -103,7 +103,8 @@ Listing \thelstlisting: #1\hfill
 \makeatother
 \usepackage{ifpdf}
 \ifpdf
- \usepackage[pdftex,bookmarks,breaklinks,unicode]{hyperref}
+ %MyEdit2 - \PassOptionsToPackage{hyphens}{url}
+ \PassOptionsToPackage{hyphens}{url} \usepackage[pdftex,bookmarks,breaklinks,unicode]{hyperref}
  \usepackage[pdftex]{graphicx}
  \DeclareGraphicsExtensions{.pdf,.jpg,.mps,.png}
 \pdfcompresslevel=9
