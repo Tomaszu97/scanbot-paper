@@ -1,6 +1,11 @@
 \chapter{Podsumowanie}
-\section{Ocena własna projektu}
->TODO uzupełnić, wyrazić zadowolenie z wyników przeprowadzonych doświadczeń, szczególnie UMBmark który wykazał że projekt podwozia jest dobry
 
-\section{Wnioski}
->TODO uzupełnić
+Podstawowy cel, jakim było stworzenie mapy pokoju został zrealizowany. Obrazy oddają rzeczywisty rozkład przeszkód w pokoju w stopniu pozwalającym na wizualną ocenę i zrozumienie struktury otoczenia. Ponadto robot jest w stanie samodzielnie poruszać się nie kolidując ze stacjonarnymi przeszkodami, a zastosowany algorytm jest niezwykle prosty w implementacji i pozwala na aplikację nawet w prostych systemach o znacznie mniejszej mocy obliczeniowej. Jakość mapy znajduje się na satysfakcjonującym poziomie, szczególnie biorąc pod uwagę półki cenowe zastosowanych peryferiów. Bez wątpienia skorzystanie z sensorów wyższej jakości wpłynęłoby pozytywnie na pracę całego systemu. Nie mniej jednak nawet z aktualną budową możliwe jest dopracowanie algorytmu mapowania poprzez dalszą, odpowiednią korekcję jego parametrów - tyczy się to również procedur związanych z jazdą autonomiczną platformy.
+
+Komunikacja bezprzewodowa działała bezproblemowo, sprawdzony moduł HC-05 zapewnił bezbłędną transmisję danych. Jedyną słabą stroną było opóźnienie i wyraźne spowolnienie komunikacji w przypadku większych odległości między modułem podłączonym do komputera a tym wbudowanym w platformę. 
+
+Budowa mechaniczna robota jest obszarem szczególnego zadowolenia autora. Po wielu zmaganiach podczas procesu opracowywania ostatecznego projektu udało się stworzyć podwozie zdolne do pokonywania wielu przeszkód w innym wypadku (przykładowo platformy bez gąsienic) niemożliwych bądź trudnych do pokonania. Taka konstrukcja bardzo pozytywnie sprawdziła się pod kątem stabilności toru jazdy, co wykazał przeprowadzony eksperyment opisany w rozdziale \ref{tab:umbmark}.
+
+Platforma \emph{ROS} pozwoliła na szybki rozwój projektu. Wiele dostępnych publicznie modułów umożliwia dalszy rozwój i poszerzenie funkcjonalności całego systemu. Jej interfejs jest bardzo elastyczny i możliwe jest łączenie wielu projektów napisanych w różnych językach programowania co upraszcza dodawanie własnych rozwiązań bądź modyfikacje już istniejących, lecz bezpośrednio niekompatybilnych.
+
+Aplikacja sterująca upraszcza komunikację z platformą i w czytelny sposób prezentuje jej możliwości i wymieniane dane. Wraz z oprogramowaniem samego robota oraz środowiskiem \emph{ROS} stanowi przyjazny, modularny ekosystem pozwalający na dalsze modyfikacje i przeprowadzanie kolejnych eksperymentów w obrębie problematyki \emph{SLAM} i wielu innych zagadnień z dziedziny robotyki.

@@ -1,8 +1,26 @@
 \chapter{Opis załączonej płyty CD/DVD}
+%TODO nagraj płytę i zmień nagłówek na CD albo DVD w zależności od wyboru
 \label{sec:disc-addon}
-%>TODO opisać co znajduje się na płycie CD
+Na załączonej płycie znajdują się 3 foldery:
+\begin{enumerate}
+    \item 3d-model - w tym folderze znajduje się trójwymiarowy projekt robota wykonany w programie Autodesk Inventor.
+    \item src-firmware - w tym folderze znajduje się kod źródłowy oprogramowania platformy napisany w środowisku \emph{PlatformIO} \cite{platformio}.
+    \item src-pc - folder zawierający moduł \emph{scanbot\_communicator} w którym znajduje się aplikacja sterująca.
+\end{enumerate}
 
-%na pewno zawrzyj projekt 3d
-%do tego dodaj aplikacje pc
-%oraz firmware
-%moze jakas instrukcje?
+\noindent \textbf{Ad.1} \\  
+
+Plik \emph{Assembly1.ipm} zawiera projekt podwozia wraz z górną pokrywą i kołami. \\ 
+
+Plik \emph{arm.ipt} to projekt wieżyczki na której zamieszczony jest sensor laserowy. \\ 
+
+Plik \emph{tracks\_v2.ipt} zawiera projekt gąsienicy. \\[10pt]
+
+\noindent \textbf{Ad.2} \\ 
+
+Cały folder należy otworzyć w środowisku \emph{PlatformIO}. \\ 
+Główny plik z programem (\emph{main.cpp}) znajduje się w podfolderze \emph{src}. \\[10pt]
+
+\noindent \textbf{Ad.2} \\ 
+
+Właściwy moduł \emph{ROS} znajduje się w podfolderze \emph{scanbot\_communicator}. Instrukcje dotyczące korzystania, w języku angielskim, znajdują się w pliku \emph{README.md}. Dodatkowo plik \emph{bag1.bag} zawiera nagranie komunikacji zachodzącej za pośrednictwem tematów \emph{ROS} podczas przejazdu robota, wykorzystywane przy budowaniu ostatniej z przedstawionych w niniejszym dokumencie map. Instrukcja w jaki sposób odtworzyć to nagranie znajduje się we wspomnianym pliku \emph{README.md}.
