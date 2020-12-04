@@ -35,29 +35,31 @@ Pierwszym pomysłem było wykorzystanie enkoderów do pomiaru translacji pojazdu
 	\label{fig:encoder-pos}
 \end{figure}
 
-Enkodery zostały zamontowane w miejscu przedstawionym na rysunek \ref{fig:encoder-pos}, symetrycznie po obu stronach podwozia. Napęd podany od serwomechanizmu przez przekładnię zębatą przenosi napęd zarówno na tylne koło jak i enkoder, z przekładniami 1:1 w obu przypadkach. Dzięki takiemu rozwiązaniu pełny obrót enkodera odpowiada pełnemu obrotowi koła. Enkoder obrotowy EC-11 generuje 20 impulsów przy kącie obrotu 360°. Aby można było wyznaczyć pokonaną odległość, w pierwszej kolejnosci należy obliczyć stosunek ilości impulsów do przejechanego dystansu - w tym celu autor stworzył prosty wzór:
+Enkodery zostały zamontowane w miejscu przedstawionym na rysunek \ref{fig:encoder-pos}, symetrycznie po obu stronach podwozia. Napęd podany od serwomechanizmu przez przekładnię zębatą przenosi napęd zarówno na tylne koło jak i enkoder, z przekładniami 1:1 w obu przypadkach. Dzięki takiemu rozwiązaniu pełny obrót enkodera odpowiada pełnemu obrotowi koła. Enkoder obrotowy EC-11 generuje 20 impulsów przy kącie obrotu 360°. Aby można było wyznaczyć pokonaną odległość, w pierwszej kolejnosci należy obliczyć stosunek ilości impulsów do przejechanego dystansu - w tym celu autor stworzył prosty wzór (\ref{eq:dpr}).
 
->TODO numeracja wzorow
->TODO opisy poza wzorem normalna czcionka w tekscie
-\begin{center}
-    $DPR = \frac{2 \pi r}{p}$ \\[5pt]
-    \emph{DPR - współczynnik (ang. Distance to Pulse Ratio) wyrażany w cm/impuls} \\[5pt]
-    \emph{r - promień koła pojazdu} \\[5pt]
-    \emph{p - liczba impulsów enkodera na obrót koła}
-\end{center}
+\begin{equation}
+    DPR = \frac{2 \pi r}{p}
+    \label{eq:dpr}
+\end{equation}
+DPR - współczynnik (ang. Distance to Pulse Ratio) wyrażany w cm/impuls \\
+r - promień koła pojazdu \\
+p - liczba impulsów enkodera na obrót koła \\ \\
 
-Wiedząc ile impulsów generuje enkoder, oraz znając wymiary koła w łatwy sposób można obliczyć DPR. Podstawiając dane to jest:
+Wiedząc ile impulsów generuje enkoder, oraz znając wymiary koła w łatwy sposób można obliczyć DPR, co uczyniono poniżej (\ref{eq:dpr2}).
 
-\begin{center}
-    $DPR = \frac{2 \pi 2,5cm}{20imp}$ \\[5pt]
-    $DPR = 0.785 \frac{cm}{imp}$ \\[5pt]
-    $\frac{1}{DPR} = 1.274$
-\end{center}
+\begin{equation}
+\begin{aligned}
+    DPR = \frac{2 \pi 2,5cm}{20imp} \\[5pt]
+    DPR = 0.785 \frac{cm}{imp} \\[5pt]
+    \frac{1}{DPR} = 1.274
+\end{aligned}
+\label{eq:dpr2}
+\end{equation}
 
 Znając współczynnik aby obliczyć przejechany dystans wystarczy zmierzyć liczbę impulsów jakie wystąpiły podczas przejazdu a następnie pomnmożyć je przez DPR. Otrzymany wynik oznacza przesunięcie robota wyrażone w centymetrach. Jako że platforma posiada dwa enkodery, a nie jest możliwe zachowanie idealnie prostego toru jazdy, wyciągana jest średnia liczba impulsów. Ze względu na grubość i wypustki na gąsienicach oraz ich poślizg rzeczywisty dystans przejechany będzie inny od zadanego. Dla kompensacji tej różnicy wartość DPR została skorygowana ręcznie do takiej, przy której błąd przemieszczenia robota zawierał się w granicy ±10\% na zadanym dystansie 100cm. Widoczna w kodzie programu, skorygowana wartość $\frac{1}{DPR}$ wynosi $1.325$ co odpowiada $DPR=0.755$ . Listing \ref{lst:move} prezentuje funkcję realizującą to zadanie.
 
->TODO kolorowanie kodu
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=c++,caption=Fragment kodu obsługującego polecenie \emph{MOVE},label=lst:move]
+\begin{listing}[ht]
+\begin{minted}[fontsize=\footnotesize]{c++}
 //MOVE
 case 9:
 {
@@ -78,14 +80,20 @@ case 9:
     delay(100);
     Serial2.println("OK");
 }
-\end{lstlisting}
+\end{minted}
+\caption{Fragment kodu obsługującego polecenie \emph{MOVE}}
+\label{lst:move}
+\end{listing}
+
+
 
 Podczas wykonywania polecenia \emph{MOVE} na gąsienice zadawana jest pełna prędkość i w pętli sprawdzana jest średnia liczba impulsów wygenerowanych przez enkoder. Dla optymalizacji algorytmu, zamiast przeliczać przy każdym pomiarze liczbę impulsów razy wartość DPR, na początku zadana w parametrze wartość odległości jest mnożona przez $\frac{1}{DPR}$, i dalej w takiej formie ta wartość wykorzystywana przy operacji porównania. W momencie w którym średnia zliczona liczba impulsów przekroczy jej wartość, serwomechanizmy zostają zatrzymane.
 \\ 
 
 Obrót (funkcja \emph{ROTATE}) polega na zadaniu przeciwstawnych wartości prędkości na obie gąsienice. W celu obrotu poruszają się one przeciwbieżnie, z równymi prędkościami. Pierwsza implementacja funkcji obrotu wyglądała jak przedstawiono poniżej:
 
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=c++,caption=Funkcja będąca głównym elementem obsługi poleceń \emph{ROTATE} oraz \emph{ROTATE\_TO},label=lst:rotate-to-function]
+\begin{listing}[ht]
+\begin{minted}[fontsize=\footnotesize]{c++}
 void rotateTo(int azimuth)
 {
     if (calcAngleDistance(getAzimuth(), azimuth) > 0)
@@ -102,7 +110,10 @@ void rotateTo(int azimuth)
     driveMotors(0, 0);
     delay(100);
 }
-\end{lstlisting}
+\end{minted}
+\caption{Funkcja będąca głównym elementem obsługi poleceń \emph{ROTATE} oraz \emph{ROTATE\_TO}}
+\label{lst:rotate-to-function}
+\end{listing}
 
 Na początku mierzony jest azymut początkowy i obliczany jest azymut końcowy (tj. początkowy + zadana wartość obrotu). Dalej wykonywana jest ta sama funkcja co w przypadku \emph{ROTATE\_TO} przyjmująca parametr azymutu końcowego. Podczas obrotu, w pętli, sprawdzana jest różnica kąta aktualnego od zadanego. Jeżeli wartość bezwzględna obrotu znajdzie się w zakresie ±10° robot zatrzyma się.
 
@@ -111,7 +122,9 @@ Takie rozwiązanie jest dobre, o ile magnetometr jest skalibrowany i funkcjonuje
 Listing \ref{lst:rotate} przedstawia nowe podejście osbługi polecenia \emph{ROTATE}. Jest ono mniej dokładne od poprzedniego, bardziej podatne na dryf (błąd obrotu kumuluje się), natomiast taki pomiar jest odporny na zakłócenia pola magnetycznego.
 Tym razem procedura jest analogiczna jak w przypadku ewaluacji polecenia \emph{MOVE}. W pętli sprawdzana jest średnia liczba impulsów, jednak tym razem gąsienice poruszają się przeciwbieżnie. Kąt obrotu na początku należy przemnożyć przez pewien współczynnik tak aby odpowiadał on ilości impulsów. Platforma kończy ruch w momencie gdy średnia wartość przekroczy obliczony próg impulsów.
 
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=c++,caption=Nowa implementacja obsługi polecenia \emph{ROTATE},label=lst:rotate]
+
+\begin{listing}[ht]
+\begin{minted}[fontsize=\footnotesize]{c++}
 // ROTATE
     case 11:
     {
@@ -132,7 +145,10 @@ Tym razem procedura jest analogiczna jak w przypadku ewaluacji polecenia \emph{M
         Serial2.println("OK");
     }
     break;
-\end{lstlisting}
+\end{minted}
+\caption{Nowa implementacja obsługi polecenia \emph{ROTATE}}
+\label{lst:rotate}
+\end{listing}
 
 Stosunek kąta obrotu do liczby impulsów ($0.164$) został wyznaczony eksperymentalnie. Najpierw przyjęto wartość 1. Następnie zadawany był kąt obrotu 90°, po czym mierzony był rzeczywisty kąt obrotu. Jeżeli wynosił on więcej, współczynnik redukowano o 0,1; analogicznie gdy obrót był mniejszy niż zadano. Gdy tak zgrubna regulacja była niewystarczająca (albo za mały albo za duży obrót), krok został zmniejszony do 0,05. Po kolejnej zmianie kroku do 0,02 czynność powtarzano do momentu w którym dalsza korekcja nie była konieczna. \\
 
@@ -194,36 +210,108 @@ Tak jak w przypadku trzech wymiarów, w pierwszej kolejności dokonywana jest ko
 \end{figure}
 
 
-Teraz można przystąpić do procedury kompensacji zniekształceń \emph{soft iron}. Idealnie, po dokonaniu korekcji w dwóch wymiarach, punkty na wykresie można by umieścić na okręgu - tak jednak nie jest. Uzyskany kształt bardziej przypomina elipsę, i ta właściwość zostanie wykorzystana. Proces przebiega w kilku krokach:
+Teraz można przystąpić do procedury kompensacji zniekształceń \emph{soft iron}. Idealnie, po dokonaniu korekcji w dwóch wymiarach, punkty na wykresie można by umieścić na okręgu - tak jednak nie jest. Uzyskany kształt bardziej przypomina elipsę, i ta właściwość zostanie wykorzystana. Przebieg procesu przedstawiono w formie pseudokodu (Algorytm \ref{pcode:soft-iron-corr}).
 
->TODO pseudokod
-\begin{enumerate}
-    \item Dla każdego z punktów liczony jest promień $r$ (wektor od $(0,0)$ do danego punktu)
-    \item Wyznaczana jest maksymalna wartość promienia $rmin$ i $rmax$. Te wartości odpowiadają kolejno półosi małej i półosi wielkiej elipsy.
-    \item Dla punktu odpowiadającego promieniowi $rmax$ Obliczany jest kąt $\theta$ za pomocą dwuargumentowej funkcji $arctan2(y,x)$, gdzie $x$ i $y$ są współrzędnymi punktu. Kąt ten odpowiada kątowi obrotu elipsy.
-    \item Tworzona jest macierz $R$. Posłuży do obrotu elipsy.
-    $R = \begin{bmatrix}
-            cos\theta & sin\theta\\
-            -sin\theta & cos\theta
-        \end{bmatrix}$
-    \item Obliczany jest parametr $\sigma$. Posłuży do ściskania elipsy. $\sigma = \frac{rmin}{rmax}$
-    \item Za pomocą macierzy $R$ elipsa jest obracana o kąt -$\theta$ w celu zrównania jej wielkiej półosi z osią OX układu współrzędnych. Współrzędne każdego z punktów kolejno są osobno przekształcane za pomocą mnożenia macierzy:
-    $   
-        \mathit{v}_{2}
-        =
-        \begin{bmatrix}
-            cos\theta & sin\theta\\
-            -sin\theta & cos\theta
-        \end{bmatrix}
-        \times
-        \begin{bmatrix}
-            \mathit{v}_{1x}\\
-            \mathit{v}_{1y}
-        \end{bmatrix}
-    $
-    gdzie $\mathit{v}_{2}$ to wynikowy wektor zawierający współrzędne przekształconego punktu.
-    \item Obróconą elipsę sprowadza się do postaci okręgu poprzez ściśnięcie jej w osi X. Robi się to przemnażając współrzędną x każdego z punktów osobno przez wcześniej obliczony parametr: $\mathit{v}_{2x} = \mathit{v}_{1x} \times \sigma$
-\end{enumerate}
+\begin{algorithm}[H]
+\SetAlgoLined
+\SetAlgorithmName{Algorytm}{}\\
+
+// Lista zmierzonych punktów w postaci par współrzędnych $(P_{_x}, P_{_y})$ \\
+$P$ \\
+// Lista do której dodane zostaną odległości od $(0,0)$ do $P$ \\
+$r$ \\[10pt]
+
+// Oblicz odległości punktów od środka układu współrzędnych \\ 
+\For{$i = 0, ..., 180$}{
+$r_{i} = \sqrt{ P_{i_x}^2 + P_{i_y}^2 }$
+}
+\EndFor \\[10pt]
+
+// Wartości $P_{min}$ i $P_{max}$ odpowiadają kolejno końcom półosi małej i półosi wielkiej elipsy. \\ 
+$r_{min} = min(r)$ \\ 
+$r_{max} = max(r)$ \\ 
+$P_{min} = min(P)$ \\ 
+$P_{max} = max(P)$ \\[10pt]
+
+// Oblicz kąt obrotu elipsy \\ 
+$\theta = arctan2(P_{max_y}, P_{max_x})$ \\[10pt]
+
+// Wyznacz macierz $R$ \\
+$R = \begin{bmatrix}
+    cos\theta & sin\theta\\
+    -sin\theta & cos\theta
+    \end{bmatrix}$ \\[10pt]
+
+// Oblicz parametr skalujący \\ 
+$\sigma = \frac{r_{min}}{r_{max}}$ \\[10pt]
+
+// Lista do której zostaną dodane punkty $P$ po przekształceniu \\
+$P2$ \\[10pt]
+
+// Obróć elipsę o kąt -$\theta$ mnożąc punkty przez macierz \\ 
+\For{$i = 0, ..., 180$}{
+$   
+\mathit{P2_{i}}
+=
+\begin{bmatrix}
+    cos\theta & sin\theta\\
+    -sin\theta & cos\theta
+\end{bmatrix}
+\times
+\begin{bmatrix}
+    \mathit{P}_{i_x}\\
+    \mathit{P}_{i_y}
+\end{bmatrix}
+$
+}
+\EndFor\\[10pt]
+
+// Lista do której zostaną dodane punkty $P2$ po przeskalowaniu \\
+$P3$ \\[10pt]
+
+// Przeskaluj elipsę \\ 
+\For{$i = 0, ..., 180$}{
+$\mathit{P3}_{i_x} = \mathit{P2}_{i_x} \times \sigma$ \\ 
+$\mathit{P3}_{i_y} = \mathit{P2}_{i_y}$ 
+}
+\EndFor\\[10pt]
+
+// Lista $P3$ zawiera wartości wyjściowe po korekcji \\ 
+\caption{Kompensacja zniekształceń \emph{soft iron}}
+\label{pcode:soft-iron-corr}
+\end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{enumerate}
+%     \item Dla każdego z punktów liczony jest promień $r$ (wektor od $(0,0)$ do danego punktu)
+%     \item Wyznaczana jest maksymalna wartość promienia $rmin$ i $rmax$. Te wartości odpowiadają kolejno półosi małej i półosi wielkiej elipsy.
+%     \item Dla punktu odpowiadającego promieniowi $rmax$ Obliczany jest kąt $\theta$ za pomocą dwuargumentowej funkcji $arctan2(y,x)$, gdzie $x$ i $y$ są współrzędnymi punktu. Kąt ten odpowiada kątowi obrotu elipsy.
+%     \item Tworzona jest macierz $R$. Posłuży do obrotu elipsy.
+%     $R = \begin{bmatrix}
+%             cos\theta & sin\theta\\
+%             -sin\theta & cos\theta
+%         \end{bmatrix}$
+%     \item Obliczany jest parametr $\sigma$. Posłuży do ściskania elipsy. $\sigma = \frac{rmin}{rmax}$
+%     \item Za pomocą macierzy $R$ elipsa jest obracana o kąt -$\theta$ w celu zrównania jej wielkiej półosi z osią OX układu współrzędnych. Współrzędne każdego z punktów kolejno są osobno przekształcane za pomocą mnożenia macierzy:
+%     $   
+%         \mathit{v}_{2}
+%         =
+%         \begin{bmatrix}
+%             cos\theta & sin\theta\\
+%             -sin\theta & cos\theta
+%         \end{bmatrix}
+%         \times
+%         \begin{bmatrix}
+%             \mathit{v}_{1x}\\
+%             \mathit{v}_{1y}
+%         \end{bmatrix}
+%     $
+%     gdzie $\mathit{v}_{2}$ to wynikowy wektor zawierający współrzędne przekształconego punktu.
+%     \item Obróconą elipsę sprowadza się do postaci okręgu poprzez ściśnięcie jej w osi X. Robi się to przemnażając współrzędną x każdego z punktów osobno przez wcześniej obliczony parametr: $\mathit{v}_{2x} = \mathit{v}_{1x} \times \sigma$
+% \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Ostatecznie chmura punktów tworzy okrąg co przedstawiono na rysunku \ref{fig:2d-mag-soft-corr-applied}. Efektem zastosowania kalibracji jest równomierny odczyt azymutu wraz z obrotem platformy. Każdy zmierzony i przefitrowany punkt może być teraz przeliczony na kąt wektora, który wskazuje azymut - wystarczy skorzystać z dwuargumentowej funkcji $arctan2(x,y)$, gdzie $x$ i $y$ są współrzędnymi punktu.
 
@@ -260,7 +348,8 @@ Po dokonaniu procedury kalibracji pomiary dużo lepiej oddają rzeczywisty kieru
 \subsection{Filtr Kalmana}
 W układach sensorycznych robotów powszechnie wykorzytywany jest filtr Kalmana\cite{Kedzierski2016}. W tej sekcji wyjaśniona będzie zastosowana w projekcie, uproszczona implementacja takiego filtru.
 
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Implementacja filtru Kalmana w języku Python,label=lst:kalman]
+\begin{listing}[ht]
+\begin{minted}[fontsize=\footnotesize]{python}
 def get_azimuth_kalman(self):
     q = 0.1
     estimate_err = 3
@@ -279,7 +368,10 @@ def get_azimuth_kalman(self):
     self.azimuth = current_est
     self.publish_ros_odometry()
     return self.azimuth
-\end{lstlisting}
+\end{minted}
+\caption{Implementacja filtru Kalmana w języku Python}
+\label{lst:kalman}
+\end{listing}
 
 Ze względu na ograniczone zasoby mikrokontrolera, filtracja odbywa się po stronie aplikacji sterującej. Pomiar dokonywany jest podczas gdy platforma stoi nieruchomo, stąd wiadomo że estymowana wartość jest stała. Na początku potrzebne będzie kilka odgórnie ustalonych parametrów. Wartości \emph{estimate\_err} i \emph{measure\_err} odpowiadają kolejno wariancji estymatora i wariancji mierzonej wartości (normalnie wyznaczone na podstawie dokładności pomiaru przyrządu), jednak nie muszą one być ustalone na podstawie rzeczywistych parametrów urządzenia. Ich wartości będą wpływać na działanie filtru - to czy dane będą bardziej "wygładzane", czy bardziej zależne od ostatniego pomiaru. W tym wypadku zostały wyznaczone eksperymentalnie. Parametr \emph{q} nie był konieczny, służy on regulacji zwiększenia wariancji estymaty w przypadku gdy estymowana wartość jest zmienna w czasie. Został on również dobrany eksperymentalnie. Chociaż ma mały wpływ na pomiary statyczne - jest zaimplementowany na potrzeby przyszłego rozwoju projektu.
 
@@ -288,11 +380,16 @@ Kolejną rzeczą która jest potrzebna jest aktualna wartość ostatniej estymac
 Mając wszystkie parametry można przystąpić do uruchomienia filtru. Przebiega on w 20 iteracjach - wartość ta została dobrana arbitralnie w celu ewentualnej późniejszej korekcji. Nie mogła być zbyt duża, aby mikrokontroler był w stanie ukończyć operację pomiaru w rozsądnym czasie. W każdej z iteracji zachodzą dwie fazy - predykcji i korekcji.
 \\
 
-Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)^-$ i odchylenia standardowego apriori $\sigma^2(t+1)^-$ dla czasu $t+1$ na podstawie analogicznych wartości aposteriori dla czasu $t$, tj.  $\hat{x}(t)^+$ i $\sigma^2(t)^+$. W tym wypadku z założenia wartość mierzona jest stała, dlatego przyjmuje się że:
-\begin{center}
-    $\hat{x}(t+1)^- = \hat{x}(t)^+$ \\[5pt]
-    $\sigma^2(t+1)^- = \sigma^2(t)^+$.    
-\end{center}
+Faza predykcji polega na wyznaczeniu wartości oczekiwanej apriori $\hat{x}(t+1)^-$ i odchylenia standardowego apriori $\sigma^2(t+1)^-$ dla czasu $t+1$ na podstawie analogicznych wartości aposteriori dla czasu $t$, tj.  $\hat{x}(t)^+$ i $\sigma^2(t)^+$. W tym wypadku z założenia wartość mierzona jest stała, dlatego przyjmuje się, że:
+
+\begin{equation}
+\begin{aligned}
+    \hat{x}(t+1)^- = \hat{x}(t)^+ \\
+    \sigma^2(t+1)^- = \sigma^2(t)^+    
+\end{aligned}
+\label{eq:x-apriori-aposteriori}
+\end{equation}
+
 Kod programu korzysta ze zmiennych \emph{est\_error} i \emph{current\_est}. Wartości apriori i aposteriori nie muszą być przechowywane jednocześnie w pamięci - wystarczy nadpisywać stare zmienne. Tutaj oznaczałoby to sformułowanie konstrukcji \emph{est\_error}=\emph{est\_error} i \emph{current\_est}=\emph{current\_est} co nie jest potrzebne i dlatego zostało pominięte.
 \\
 
@@ -347,23 +444,23 @@ Metoda \emph{UMBmark} polega na pięciokrotnym pomiarze błędów $\in{x}$ oraz 
 
 Mając do dyspozycji wartości potrzebnych pomiarów można przystąpić do obliczeń. Najpierw dla każdego kierunku należy wyznaczyć środek ciężkości, czyli uśrednić wartości współrzędnych $x$ i $y$, gdzie przykładowo dolny indeks $x_{cgcw}$ oznacza wartość współrzędnej $x$ środka ciężkości dla przejazdów zgodnych z ruchem wskazówek zegara (ang. \emph{cg - center of gravity}, \emph{cw - clockwise}). Analogicznie dla kierunku przeciwnego to będzie $x_{csccw}$. I tak:
 
-\begin{center}
-    $
+\begin{equation}
+\begin{aligned}
     x_{cgccw} = \frac{1}{n}\sum_{i=1}^{n} (\in{x_{i,ccw}}) = \frac{-28-33-2-5+13}{5} = -11 \\[5pt]
     y_{cgccw} = \frac{1}{n}\sum_{i=1}^{n} (\in{y_{i,ccw}}) = \frac{5+15+4-21-12}{5} = -1,8 \\[5pt]
     x_{cgcw} = \frac{1}{n}\sum_{i=1}^{n} (\in{x_{i,cw}}) = \frac{62+54-45-55-31}{5} = -3 \\[5pt]
     y_{cgcw} = \frac{1}{n}\sum_{i=1}^{n} (\in{y_{i,cw}}) = \frac{28+32+9-19+27}{5} = 15,4
-    $
-\end{center}
+\end{aligned}
+\end{equation}
 
 W kolejnym kroku zostaną obliczone współczynniki $\alpha$ oraz $\beta$:
 
-\begin{center}
-    $
+\begin{equation}
+\begin{aligned}
     \alpha = \frac{x_cgcw + x_cgccw}{-4L} = \frac{-3 - 11}{-4 \times 1,5} = 2,33^{\circ} \\[5pt] 
     \beta = \frac{x_cgcw - x_cgccw}{-4L} = \frac{-3 + 11}{-4 \times 1,5} = -1,33^{\circ}
-    $
-\end{center}
+\end{aligned}
+\end{equation}
 
 Z pomocą współczynników $\alpha$ i $\beta$ obliczane są błędy wylistowane poniżej. Tu należy zaznaczyć, że korekta dotyczy parametrów długości osi $b$ i średnicy kół $D$ schematu zastępczego robota przedstawionego wcześniej w niniejszym dokumencie na rysunku \ref{fig:odom-axis-simplified}.
 
@@ -382,13 +479,13 @@ Z pomocą współczynników $\alpha$ i $\beta$ obliczane są błędy wylistowane
 
 Obliczanie współczynników $R$, $E_{d}$ i $E_{b}$ ukazano poniżej. Przydatny będzie tutaj parametr $b$ oznaczający rozpiętość osi zastępczej pojazdu. Jest ona równa osiom rzeczywistym i wynosi 14,22 centymetrów, co uwidoczniono na rysunku \ref{fig:nominal-axis-width}.
 
-\begin{center}
-    $
+\begin{equation}
+\begin{aligned}
     R = \frac{L : 2}{sin(\beta : 2)} = \frac{1,5 : 2}{sin(-1,33 : 2)} = -0,01 \\[5pt]
     E_{d} = \frac{R + (b : 2)}{R - (b : 2)} = \frac{-0,01 + (14,22 : 2)}{-0,01 - (14,22 : 2)} = -0.997 \\[5pt]
     E_{b} = \frac{90^{\circ}}{90^{\circ} - \alpha} = \frac{90^{\circ}}{90^{\circ} - 2,33^{\circ}} = 1,03
-    $
-\end{center}
+\end{aligned}
+\end{equation}
 
 
 Parametr $R$ posłużył jedynie obliczeniu pozostałych dwóch. Współczynnik $E_{d}$ odnosi się do korekcji błędów typu b opisanych w pracy Borenstein'a (zakrzywiony tor jazdy) i jest równy stosunkowi średnic przeciwległych kół (modelu zastępczego) pojazdu. Specjalnie, w odróżnieniu do innych wartości został zaokrąglony do trzeciego miejsca po przecinku - w innym wypadku wynosiłby 1. Z tego samego powodu można uznać, że korekcja uwzględniająca ten parametr nie jest konieczna - robot jeździ wystarczająco "prosto" a ewentualne zakrzywienie toru jazdy wynika z czynników niesystematycznych (zmiany powierzchni, nierówności).
@@ -445,20 +542,78 @@ W opisanych krokach dwa przeprowadzane pomiary były od siebie niezależne - mie
 	\label{fig:overlapping-4}
 \end{figure}
 
-W celu korekcji rzutowania punktów na płaszczyznę, pierwotnie stosowany był opracowany przez autora prosty, naiwny algorytm korygujący rotację. Jego działanie można opisać w kilku krokach:
-\begin{enumerate}
-    \item Na początku należy przeprowadzić pierwszy skan i zmierzyć azymut w którym skierowany jest robot.
-    \item Następnie pomiary ze skanu (odległości w cm dla każdego z całkowitych wartości kątów w zakresie $\langle0^{\circ}, 180^{\circ}\rangle$) należy nanieść na wykres, uwzględniając rotację robota (dodając zmierzony azymut do wartości kątów przypisanych do każdego z pomiarów skanu).
-    \item Potem przeprowadzany jest kolejny skan i pomiar azymutu.
-    \item Do każdego z kątów pomiaru skanu dodawany jest azymut.
-    \item W pętli, dla każdej z wartości $i$, gdzie $i={-10,-9,...,9,10}, i \in \mathbb{Z}$ do każdego z kątów dodawana jest wartość $i$ oraz sprawdzany i zapisywany jest parametr \emph{score} w sposób opisany w dalszej części dokumentu.
-    \item Sprawdzane jest dla jakiego $i$ wartość parametru \emph{score} była największa. 
-    \item Wyszukana wartość $i$ jest ostatecznie dodawana do wartości każdego z kątów pomiaru razem ze zmierzonym azymutem. Ta sama wartość jest dodawana do azymutu w którym skierowany jest robot - w ten sposób następuje jego korekcja. Kolejny pomiar i korekcja następuje od punktu 3 niniejszej listy.
-\end{enumerate}
+W celu korekcji rzutowania punktów na płaszczyznę, pierwotnie stosowany był opracowany przez autora prosty, naiwny algorytm korygujący rotację. Jego działanie można opisać w kilku krokach. (Algorytm \ref{pcode:rotation-correction}).
+
+\begin{algorithm}[ht]
+\SetAlgoLined
+\SetAlgorithmName{Algorytm}{}\\
+
+// Pierwszy skan nie jest korygowany, ponieważ nie ma innych punktów na mapie \\ 
+kąty, odległości = wykonaj\_skan() \\
+azymut = zmierz\_azymut() \\
+\For{i = 0, ..., 180}{
+    kąty[i] = kąty[i] + azymut \\ 
+}
+\EndFor\\[10pt]
+
+nanieś\_na\_wykres(kąty, odległości) \\[10pt]
+
+\While{program\_jest\_uruchomiony}{
+    kąty, odległości = wykonaj\_skan() \\
+    azymut = zmierz\_azymut() \\
+    \For{i = 0, ..., 180}{
+        kąty[i] += azymut \\ 
+    }
+    \EndFor\\[10pt]
+    
+    // Słownik przechowujący wartości \emph{score} \\ 
+    // dla poszczególnych par klucz:wartość ( kąt\_korekcji:score) \\ 
+    score = \{\} \\ [10pt]
+    
+    \For{i = -10, ..., 10}{
+        kąty\_temp[i] = kąty[i] + i  \\
+        score[i] = oblicz\_score(kąty\_temp, odległości, punkty\_na\_mapie) \\
+    }
+    \EndFor\\[10pt]
+    
+    \eIf{max(score.wartości()) > 2500}{
+        kąt\_korekcji = max(score.wartości()).klucz() \\ 
+        \For{i = 0, ..., 180}{
+            kąty[i] += kąt\_korekcji  \\
+        }
+        \EndFor\\
+        nanieś\_na\_wykres(kąty, odległości) \\
+        azymut\_robota += kąt\_korekcji
+    }{
+        // Nie stosuj korekcji \\
+        nanieś\_na\_wykres(kąty, odległości) \\
+    }
+}
+\EndWhile\\[10pt]
+
+\caption{Korekcja rotacji zmierzonych punktów}
+\label{pcode:rotation-correction}
+\end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{enumerate}
+%     \item Na początku należy przeprowadzić pierwszy skan i zmierzyć azymut w którym skierowany jest robot.
+%     \item Następnie pomiary ze skanu (odległości w cm dla każdego z całkowitych wartości kątów w zakresie $\langle0^{\circ}, 180^{\circ}\rangle$) należy nanieść na wykres, uwzględniając rotację robota (dodając zmierzony azymut do wartości kątów przypisanych do każdego z pomiarów skanu).
+%     \item Potem przeprowadzany jest kolejny skan i pomiar azymutu.
+%     \item Do każdego z kątów pomiaru skanu dodawany jest azymut.
+%     \item W pętli, dla każdej z wartości $i$, gdzie $i={-10,-9,...,9,10}, i \in \mathbb{Z}$ do każdego z kątów dodawana jest wartość $i$ oraz sprawdzany i zapisywany jest parametr \emph{score} w sposób opisany w dalszej części dokumentu.
+%     \item Sprawdzane jest dla jakiego $i$ wartość parametru \emph{score} była największa. 
+%     \item Wyszukana wartość $i$ jest ostatecznie dodawana do wartości każdego z kątów pomiaru razem ze zmierzonym azymutem. Ta sama wartość jest dodawana do azymutu w którym skierowany jest robot - w ten sposób następuje jego korekcja. Kolejny pomiar i korekcja następuje od punktu 3 niniejszej listy.
+% \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Listing \ref{lst:score-angle-correction} przedstawia fragment kodu przeprowadzający obliczanie współczynnika \emph{score}. Tutaj należy zaznaczyć, że ze względu na liczne zmiany w projekcie ten fragment nie zachował się w finalnej wersji kodu, można go natomiast podejrzeć na rezpozytorium w pliku \emph{src-pc/main.py} na gałęzi \emph{master} pod \emph{commit id} wynoszącym aba2c1510f1a661e6365f9cd4ca7dc782f013593.
 
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Obliczanie współczynnika \emph{score} i korekcja kąta w celu dopasowania pomiaru do mapy,label=lst:score-angle-correction]
+\begin{listing}[H]
+\begin{minted}[fontsize=\footnotesize]{python}
+
 def calc_xy_overlap_score(self, points1, points2):
     score = 0
     for point in points1:
@@ -473,11 +628,16 @@ def calc_xy_overlap_score(self, points1, points2):
         else:
             score += int((1/distance)*100)
     return score
-\end{lstlisting}
+\end{minted}
+\caption{Obliczanie współczynnika \emph{score} i korekcja kąta w celu dopasowania pomiaru do mapy}
+\label{lst:score-angle-correction}
+\end{listing}
 
-Współczynnik \emph{score} obliczany jest na podstawie podobieństwa między pozycją punktów z najnowszego skanu względem tego, co już znajduje się na mapie. Aby móc skorzystać z powyższej funkcji poszczególne pomiary dla skanu są przeliczane z postaci biegunowej na kartezjańską. Następnie jest ona uruchamiana, a do parametrów \emph{points1} i \emph{points2} kolejno przekazywane są listy punktów nowego skanu i punktów znajdujących się na mapie. Następnie dla każdego z punktów skanu wykonywana jest operacja znalezienia najbliższego punktu na mapie i obliczenia odległości między nimi. Jeżeli punkty idealnie się pokrywają, do \emph{score} dodawana jest wartość 100. Jeżeli ta odległość wynosi więcej lub równo 100 centymetrów, nie dodawana jest żadna wartość. W zakresie $(1,100)$ do współczynnika jest dodawana wartość równa $\frac{1}{odległość}*100$, zaokrąglona do najbliższej liczby całkowitej. 
+Współczynnik \emph{score} obliczany jest na podstawie podobieństwa między pozycją punktów z najnowszego skanu względem tego, co już znajduje się na mapie. Aby móc skorzystać z powyższej funkcji poszczególne pomiary dla skanu są przeliczane z postaci biegunowej na kartezjańską. Następnie jest ona uruchamiana, a do parametrów \emph{points1} i \emph{points2} kolejno przekazywane są listy punktów nowego skanu i punktów znajdujących się na mapie. W dalszej kolejności dla każdego z punktów skanu wykonywana jest operacja znalezienia najbliższego punktu na mapie i obliczenia odległości między nimi. Jeżeli punkty idealnie się pokrywają, do \emph{score} dodawana jest wartość 100. Jeżeli ta odległość wynosi więcej lub równo 100 centymetrów, nie dodawana jest żadna wartość. W zakresie $(1,100)$ do współczynnika jest dodawana wartość równa $\frac{1}{odległość}*100$, zaokrąglona do najbliższej liczby całkowitej. 
 
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=python,caption=Decyzja o zastosowaniu korekty,label=lst:score-threshold]
+\begin{listing}[H]
+\begin{minted}[fontsize=\footnotesize]{c++}
+
 if score > 2500:
     print(
         f"adjusted plot and robot rotation by {best_rotation} degrees.")
@@ -485,7 +645,10 @@ if score > 2500:
     self.robot.update_azimuth(self.robot.azimuth + best_rotation)
 else:
     rotated_data = filtered_data
-\end{lstlisting}
+\end{minted}
+\caption{Decyzja o zastosowaniu korekty}
+\label{lst:score-threshold}
+\end{listing}
 
 Doświadczalnie został dobrany próg wartości \emph{score} równy 2500. Jeśli współczynnik dla najlepszej korekty kąta wynosi więcej niż próg, korekta zostanie zaakceptowana - azymut robota zostanie poprawiony, skan również będzie skorygowany i rzutowany na mapę. Obrazuje to listing \ref{lst:score-threshold}.
 
